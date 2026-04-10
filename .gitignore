@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Java
+*.class
+bin/
+*.jar
+*.war
+*.ear
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+out/
