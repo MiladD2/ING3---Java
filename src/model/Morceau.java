@@ -1,34 +1,131 @@
 package model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
-public class Morceau implements Serializable {
+public class Morceau {
+    private final int id;
     private String titre;
-    private int duree; // en secondes
-    private Interprete interprete;
-    private List<Album> albums;
-    private List<Evaluation> evaluations;
+    private int dureeSecondes;
+    private String genre;
+    private int nombreEcoutes;
+    private Artiste artiste;
+    private Groupe groupe;
 
-    public Morceau(String titre, int duree, Interprete interprete) {
+    public Morceau(int id, String titre, int dureeSecondes, String genre) {
+        if (id < 0) {
+            throw new IllegalArgumentException("L'id ne peut pas etre negatif.");
+        }
+        if (titre == null || titre.isBlank()) {
+            throw new IllegalArgumentException("Le titre du morceau est obligatoire.");
+        }
+        if (dureeSecondes <= 0) {
+            throw new IllegalArgumentException("La duree doit etre strictement positive.");
+        }
+
+        this.id = id;
         this.titre = titre;
-        this.duree = duree;
-        this.interprete = interprete;
-        this.albums = new ArrayList<>();
-        this.evaluations = new ArrayList<>();
+        this.dureeSecondes = dureeSecondes;
+        this.genre = genre == null ? "" : genre;
+        this.nombreEcoutes = 0;
     }
 
-    public List<Evaluation> getEvaluations() { return evaluations; }
-    public void setEvaluations(List<Evaluation> evaluations) { this.evaluations = evaluations; }
-    public void ajouterEvaluation(Evaluation e) { evaluations.add(e); }
+    public int getId() {
+        return id;
+    }
 
-    public String getTitre() { return titre; }
-    public void setTitre(String titre) { this.titre = titre; }
-    public int getDuree() { return duree; }
-    public void setDuree(int duree) { this.duree = duree; }
-    public Interprete getInterprete() { return interprete; }
-    public void setInterprete(Interprete interprete) { this.interprete = interprete; }
-    public List<Album> getAlbums() { return albums; }
-    public void setAlbums(List<Album> albums) { this.albums = albums; }
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        if (titre == null || titre.isBlank()) {
+            throw new IllegalArgumentException("Le titre du morceau est obligatoire.");
+        }
+        this.titre = titre;
+    }
+
+    public int getDureeSecondes() {
+        return dureeSecondes;
+    }
+
+    public void setDureeSecondes(int dureeSecondes) {
+        if (dureeSecondes <= 0) {
+            throw new IllegalArgumentException("La duree doit etre strictement positive.");
+        }
+        this.dureeSecondes = dureeSecondes;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre == null ? "" : genre;
+    }
+
+    public int getNombreEcoutes() {
+        return nombreEcoutes;
+    }
+
+    public Artiste getArtiste() {
+        return artiste;
+    }
+
+    public Groupe getGroupe() {
+        return groupe;
+    }
+
+    public void definirArtiste(Artiste artiste) {
+        this.artiste = artiste;
+        this.groupe = null;
+    }
+
+    public void definirGroupe(Groupe groupe) {
+        this.groupe = groupe;
+        this.artiste = null;
+    }
+
+    public void incrementerNbEcoutes() {
+        nombreEcoutes++;
+    }
+
+    public String getInterprete() {
+        if (artiste != null) {
+            return artiste.getNom();
+        }
+        if (groupe != null) {
+            return groupe.getNom();
+        }
+        return "Inconnu";
+    }
+
+    public String getDureeFormatee() {
+        int minutes = dureeSecondes / 60;
+        int secondes = dureeSecondes % 60;
+        return String.format("%d:%02d", minutes, secondes);
+    }
+
+    @Override
+    public String toString() {
+        return "Morceau{" +
+                "id=" + id +
+                ", titre='" + titre + '\'' +
+                ", duree=" + getDureeFormatee() +
+                ", genre='" + genre + '\'' +
+                ", interprete='" + getInterprete() + '\'' +
+                ", ecoutes=" + nombreEcoutes +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Morceau morceau)) return false;
+        return id == morceau.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
