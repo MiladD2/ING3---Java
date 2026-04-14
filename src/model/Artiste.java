@@ -1,75 +1,23 @@
 package model;
 
-import java.util.Objects;
+import java.io.Serializable;
 
-public class Artiste {
-    private final int id;
+public class Artiste implements Interprete {
     private String nom;
-    private String biographie;
-    private Groupe groupe; // null si artiste solo
+    private Groupe groupe; // Facultatif
 
-    public Artiste(int id, String nom, String biographie) {
-        if (id < 0) {
-            throw new IllegalArgumentException("L'id ne peut pas être negatif.");
-        }
-        if (nom == null || nom.isBlank()) {
-            throw new IllegalArgumentException("Le nom de l'artiste est obligatoire.");
-        }
-
-        this.id = id;
-        this.nom = nom;
-        this.biographie = biographie == null ? "" : biographie;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        if (nom == null || nom.isBlank()) {
-            throw new IllegalArgumentException("Le nom de l'artiste est obligatoire.");
-        }
+    public Artiste(String nom) {
         this.nom = nom;
     }
 
-    public String getBiographie() {
-        return biographie;
-    }
-
-    public void setBiographie(String biographie) {
-        this.biographie = biographie == null ? "" : biographie;
-    }
-
-    public Groupe getGroupe() {
-        return groupe;
-    }
-
-    public void setGroupe(Groupe groupe) {
+    public Artiste(String nom, Groupe groupe) {
+        this.nom = nom;
         this.groupe = groupe;
     }
 
     @Override
-    public String toString() {
-        return "Artiste{" +
-                "id=" + id +
-                ", nom='" + nom + '\'' +
-                ", groupe=" + (groupe != null ? groupe.getNom() : "aucun") +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Artiste artiste)) return false;
-        return id == artiste.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
+    public Groupe getGroupe() { return groupe; }
+    public void setGroupe(Groupe groupe) { this.groupe = groupe; }
 }
