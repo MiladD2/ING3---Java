@@ -1,0 +1,20 @@
+package model;
+
+public class Administrateur extends Utilisateur {
+
+    public Administrateur(String identifiant, String motDePasse) {
+        super(identifiant, motDePasse);
+    }
+
+    @Override
+    public String getRole() {
+        return "ADMINISTRATEUR";
+    }
+
+    @Override
+    public String toString() {
+        return "Administrateur{" +
+                "identifiant='" + getIdentifiant() + '\'' +
+                '}';
+    }
+}
