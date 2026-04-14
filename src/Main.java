@@ -5,6 +5,7 @@ import model.Morceau;
 import model.Historique;
 import model.Ecoute;
 import model.PlayList;
+import model.Abonne;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,6 +17,7 @@ public class Main {
         testerAlbum();
         testerExceptions();
         testerPlaylistEtHistorique();
+        testerAbonne();
 
         System.out.println("\n=== FIN DES TESTS ===");
     }
@@ -130,29 +132,124 @@ public class Main {
     }
 
     private static void testerPlaylistEtHistorique() {
-    System.out.println("\n--- Test Playlist et Historique ---");
+        System.out.println("\n--- Test Playlist et Historique ---");
 
-    Morceau m1 = new Morceau(201, "Numb", 185, "Rock");
-    Morceau m2 = new Morceau(202, "In The End", 216, "Rock");
+        Morceau m1 = new Morceau(201, "Numb", 185, "Rock");
+        Morceau m2 = new Morceau(202, "In The End", 216, "Rock");
 
-    PlayList playlist = new PlayList(1, "Mes favoris");
-    playlist.ajouterMorceau(m1);
-    playlist.ajouterMorceau(m2);
+        PlayList playlist = new PlayList(1, "Mes favoris");
+        playlist.ajouterMorceau(m1);
+        playlist.ajouterMorceau(m2);
 
-    System.out.println(playlist);
-    System.out.println("Contient Numb ? " + playlist.contient(m1));
-    System.out.println("Nombre de morceaux : " + playlist.getNombreMorceaux());
+        System.out.println(playlist);
+        System.out.println("Contient Numb ? " + playlist.contient(m1));
+        System.out.println("Nombre de morceaux : " + playlist.getNombreMorceaux());
 
-    Historique historique = new Historique();
-    historique.ajouterEcoute(m1);
-    historique.ajouterEcoute(m2);
+        Historique historique = new Historique();
+        historique.ajouterEcoute(m1);
+        historique.ajouterEcoute(m2);
 
-    System.out.println(historique);
-    for (Ecoute ecoute : historique.getEcoutes()) {
-        System.out.println(ecoute);
+        System.out.println(historique);
+        for (Ecoute ecoute : historique.getEcoutes()) {
+            System.out.println(ecoute);
+        }
+
+        System.out.println("Ecoutes du morceau 1 : " + m1.getNombreEcoutes());
+        System.out.println("Ecoutes du morceau 2 : " + m2.getNombreEcoutes());
     }
 
-    System.out.println("Ecoutes du morceau 1 : " + m1.getNombreEcoutes());
-    System.out.println("Ecoutes du morceau 2 : " + m2.getNombreEcoutes());
-}
+    private static void testerAbonne() {
+        System.out.println("\n--- Test Abonne ---");
+
+        Abonne abonne = new Abonne("alice", "1234");
+        System.out.println("Identifiant : " + abonne.getIdentifiant());
+        System.out.println("Role : " + abonne.getRole());
+        System.out.println("Authentification correcte ? " + abonne.authentifier("1234"));
+        System.out.println("Authentification incorrecte ? " + abonne.authentifier("xxxx"));
+        System.out.println("Compte suspendu ? " + abonne.estSuspendu());
+
+        abonne.changerMotDePasse("abcd");
+        System.out.println("Authentification apres changement mdp ? " + abonne.authentifier("abcd"));
+
+        abonne.creerPlaylist("Road Trip");
+        abonne.creerPlaylist("Sport");
+
+        System.out.println("Nombre de playlists : " + abonne.getPlayLists().size());
+        System.out.println("Playlist 'Road Trip' trouvee ? " + (abonne.trouverPlaylistParNom("Road Trip") != null));
+        System.out.println("Playlist 'Inconnue' trouvee ? " + (abonne.trouverPlaylistParNom("Inconnue") != null));
+
+        Morceau m1 = new Morceau(301, "Believer", 204, "Rock");
+        Morceau m2 = new Morceau(302, "Lose Yourself", 326, "Rap");
+
+        abonne.ajouterMorceauAPlaylist("Road Trip", m1);
+        abonne.ajouterMorceauAPlaylist("Road Trip", m2);
+
+        System.out.println("Nombre de morceaux dans Road Trip : "
+                + abonne.trouverPlaylistParNom("Road Trip").getNombreMorceaux());
+
+        abonne.retirerMorceauDePlaylist("Road Trip", m2);
+        System.out.println("Nombre de morceaux apres retrait : "
+                + abonne.trouverPlaylistParNom("Road Trip").getNombreMorceaux());
+
+        abonne.renommerPlaylist("Road Trip", "Voyage");
+        System.out.println("Playlist renommee trouvee ? " + (abonne.trouverPlaylistParNom("Voyage") != null));
+
+        abonne.enregistrerEcoute(m1);
+        System.out.println("Nombre d'ecoutes du morceau : " + m1.getNombreEcoutes());
+        System.out.println("Nombre d'ecoutes dans l'historique : " + abonne.getHistorique().getEcoutes().size());
+
+        abonne.supprimerPlaylist("Sport");
+        System.out.println("Nombre de playlists apres suppression : " + abonne.getPlayLists().size());
+
+        abonne.suspendre();
+        System.out.println("Compte suspendu apres suspension ? " + abonne.estSuspendu());
+
+        try {
+            abonne.creerPlaylist("Interdite");
+            System.out.println("ERREUR : exception attendue non levee pour compte suspendu");
+        } catch (IllegalStateException e) {
+            System.out.println("OK creation impossible si compte suspendu : " + e.getMessage());
+        }
+
+        abonne.reactiver();
+        System.out.println("Compte suspendu apres reactivation ? " + abonne.estSuspendu());
+
+        abonne.creerPlaylist("Nouvelle Playlist");
+        System.out.println("Nombre de playlists apres reactivation : " + abonne.getPlayLists().size());
+
+        try {
+            new Abonne("", "1234");
+            System.out.println("ERREUR : exception attendue non levee pour identifiant vide");
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK identifiant invalide : " + e.getMessage());
+        }
+
+        try {
+            new Abonne("bob", "");
+            System.out.println("ERREUR : exception attendue non levee pour mot de passe vide");
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK mot de passe invalide : " + e.getMessage());
+        }
+
+        try {
+            abonne.creerPlaylist("Voyage");
+            System.out.println("ERREUR : exception attendue non levee pour doublon playlist");
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK doublon playlist : " + e.getMessage());
+        }
+
+        try {
+            abonne.renommerPlaylist("Voyage", "Nouvelle Playlist");
+            System.out.println("ERREUR : exception attendue non levee pour renommage en doublon");
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK renommage doublon : " + e.getMessage());
+        }
+
+        try {
+            abonne.supprimerPlaylist("Introuvable");
+            System.out.println("ERREUR : exception attendue non levee pour suppression playlist absente");
+        } catch (IllegalArgumentException e) {
+            System.out.println("OK suppression playlist absente : " + e.getMessage());
+        }
+    }
 }
