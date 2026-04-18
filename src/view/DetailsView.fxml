@@ -4,35 +4,63 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox spacing="20.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox spacing="20.0">
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <VBox spacing="30.0" styleClass="details-container">
          <children>
-            <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+            <!-- Header Section -->
+            <HBox spacing="25.0" alignment="CENTER_LEFT">
                <children>
-                  <Label fx:id="detailsTitle" styleClass="label-title" text="Titre de l'élément" />
-                  <Label fx:id="detailsSubtitle" style="-fx-font-size: 18px; -fx-text-fill: #b3b3b3;" text="Sous-titre (Artiste, Genre, etc.)" />
-                  <HBox fx:id="detailsMetadata" spacing="20.0">
+                  <!-- Square placeholder for Image/Icon -->
+                  <Region prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #282828; -fx-background-radius: 10;" />
+                  <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <Label fx:id="detailsLabel1" text="Info 1" />
-                        <Label fx:id="detailsLabel2" text="Info 2" />
+                        <Label fx:id="detailsSubtitle" style="-fx-text-fill: #b3b3b3; -fx-font-weight: bold; -fx-font-size: 14px;" text="TYPE" />
+                        <Label fx:id="detailsTitle" styleClass="label-title" style="-fx-font-size: 48px;" text="Titre Principal" />
+                        <FlowPane fx:id="detailsMetaFlow" hgap="10.0" vgap="5.0">
+                           <children>
+                              <Label fx:id="detailsLabel1" style="-fx-text-fill: white;" text="Info 1" />
+                              <Label text="•" style="-fx-text-fill: #b3b3b3;" />
+                              <Label fx:id="detailsLabel2" style="-fx-text-fill: #b3b3b3;" text="Info 2" />
+                           </children>
+                        </FlowPane>
                      </children>
-                  </HBox>
+                  </VBox>
+               </children>
+            </HBox>
+
+            <!-- Action Bar -->
+            <HBox spacing="20.0" alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="detailsPlayButton" mnemonicParsing="false" styleClass="button-primary" style="-fx-font-size: 16px; -fx-padding: 12 30;" text="LIRE" />
+                  <Button mnemonicParsing="false" onAction="#showSearch" styleClass="button-secondary" text="Retour" />
+               </children>
+            </HBox>
+
+            <!-- Dynamic Content Sections -->
+            <VBox fx:id="detailsContentSections" spacing="25.0">
+               <children>
+                  <!-- Section Artistes (Membres ou Interprètes) -->
+                  <VBox fx:id="sectionArtistes" spacing="10.0" visible="false" managed="false">
+                     <children>
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" text="Artistes" />
+                        <FlowPane fx:id="artistsFlowPane" hgap="15.0" vgap="15.0" />
+                     </children>
+                  </VBox>
+
+                  <!-- Section Morceaux -->
+                  <VBox fx:id="sectionMorceaux" spacing="10.0" visible="false" managed="false">
+                     <children>
+                        <Label fx:id="morceauxTitleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" text="Morceaux" />
+                        <VBox fx:id="morceauxVBox" spacing="2.0" />
+                     </children>
+                  </VBox>
                </children>
             </VBox>
-            <Button fx:id="detailsPlayButton" mnemonicParsing="false" styleClass="button-primary" text="Lire tout" visible="false" />
          </children>
-      </HBox>
-      <Separator />
-      <VBox fx:id="detailsContentArea" spacing="10.0" VBox.vgrow="ALWAYS">
-         <children>
-            <Label fx:id="detailsContentTitle" style="-fx-font-weight: bold;" text="Contenu" />
-            <ListView fx:id="detailsListView" VBox.vgrow="ALWAYS" />
-         </children>
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
       </VBox>
-      <Button mnemonicParsing="false" onAction="#showSearch" styleClass="button-secondary" text="Retour à la recherche" />
-   </children>
-   <padding>
-      <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-   </padding>
-</VBox>
+   </content>
+</ScrollPane>

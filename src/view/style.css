@@ -21,6 +21,18 @@
     -fx-text-fill: white;
 }
 
+.toggle-button {
+    -fx-background-color: #282828;
+    -fx-text-fill: #b3b3b3;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #1db954;
+    -fx-text-fill: white;
+}
+
 .active-nav-button {
     -fx-text-fill: white;
     -fx-background-color: #282828;
