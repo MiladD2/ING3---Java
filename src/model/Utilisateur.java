@@ -3,13 +3,7 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Représente un utilisateur authentifiable du système Javazik.
- * <p>
- * Cette classe abstraite factorise les données communes aux différents
- * types d'utilisateurs persistants du système, notamment les abonnés
- * et les administrateurs.
- */
+
 public abstract class Utilisateur implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -17,13 +11,6 @@ public abstract class Utilisateur implements Serializable {
     private final String identifiant;
     private String motDePasse;
 
-    /**
-     * Construit un utilisateur avec un identifiant et un mot de passe.
-     *
-     * @param identifiant identifiant de connexion
-     * @param motDePasse mot de passe
-     * @throws IllegalArgumentException si une donnée est invalide
-     */
     public Utilisateur(String identifiant, String motDePasse) {
         this.identifiant = validerIdentifiant(identifiant);
         this.motDePasse = validerMotDePasse(motDePasse);
@@ -33,31 +20,16 @@ public abstract class Utilisateur implements Serializable {
         return identifiant;
     }
 
-    /**
-     * Vérifie si le mot de passe fourni correspond à celui de l'utilisateur.
-     *
-     * @param motDePasse mot de passe saisi
-     * @return true si le mot de passe correspond, false sinon
-     */
+
     public boolean authentifier(String motDePasse) {
         return this.motDePasse.equals(Objects.requireNonNull(motDePasse));
     }
 
-    /**
-     * Modifie le mot de passe de l'utilisateur.
-     *
-     * @param nouveauMotDePasse nouveau mot de passe
-     * @throws IllegalArgumentException si le mot de passe est invalide
-     */
+   
     public void changerMotDePasse(String nouveauMotDePasse) {
         this.motDePasse = validerMotDePasse(nouveauMotDePasse);
     }
 
-    /**
-     * Indique le rôle métier de l'utilisateur.
-     *
-     * @return le rôle sous forme textuelle
-     */
     public abstract String getRole();
 
     private String validerIdentifiant(String identifiant) {
