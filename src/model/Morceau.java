@@ -29,6 +29,15 @@ public class Morceau {
         this.nombreEcoutes = 0;
     }
 
+
+
+    public Morceau(String titre, int id, Artiste artiste) {
+        //TODO Auto-generated constructor stub
+        this.id = id;
+        this.titre = titre;
+        this.artiste = artiste;
+    }
+
     public int getId() {
         return id;
     }

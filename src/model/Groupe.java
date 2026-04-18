@@ -25,6 +25,19 @@ public class Groupe {
         this.membres = new ArrayList<>();
     }
 
+    public Groupe(String nom) {
+
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom du groupe est obligatoire.");
+        }
+
+        this.id = 0;
+        this.nom = nom;
+        this.description = "zebi";
+        this.membres = new ArrayList<>();
+    }
+
+    
     public int getId() {
         return id;
     }
