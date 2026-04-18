@@ -1,12 +1,14 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JavazikSystem {
+public class JavazikSystem implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final Catalogue catalogue;
     private final Map<String, Utilisateur> utilisateurs;

@@ -1,8 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Artiste {
+public class Artiste implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String nom;
     private String biographie;

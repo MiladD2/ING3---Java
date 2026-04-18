@@ -1,11 +1,13 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Groupe {
+public class Groupe implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String nom;
     private String description;

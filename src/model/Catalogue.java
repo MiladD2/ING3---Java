@@ -1,10 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Catalogue {
+public class Catalogue implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final List<Morceau> morceaux;
     private final List<Album> albums;
