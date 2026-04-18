@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Mes Playlists" />
+      <HBox spacing="10.0">
+         <children>
+            <Button mnemonicParsing="false" styleClass="button-primary" text="Nouvelle Playlist" />
+         </children>
+      </HBox>
+      <ListView fx:id="playlistList" VBox.vgrow="ALWAYS" />
+   </children>
+</VBox>

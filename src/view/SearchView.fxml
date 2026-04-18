@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox spacing="10.0">
+         <children>
+            <TextField fx:id="searchBar" promptText="Rechercher un morceau, artiste..." HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onAction="#handleSearch" styleClass="button-primary" text="Rechercher" />
+         </children>
+      </HBox>
+      <ListView fx:id="searchResults" VBox.vgrow="ALWAYS" />
+   </children>
+</VBox>

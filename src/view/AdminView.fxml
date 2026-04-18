@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Administration" />
+      <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <tabs>
+          <Tab text="Catalogue">
+            <content>
+              <VBox spacing="10.0">
+                     <children>
+                        <Button mnemonicParsing="false" styleClass="button-primary" text="Ajouter un morceau" />
+                        <ListView fx:id="adminCatalogueList" />
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </VBox>
+            </content>
+          </Tab>
+          <Tab text="Utilisateurs">
+            <content>
+              <VBox spacing="10.0">
+                     <children>
+                        <ListView fx:id="adminUserList" />
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </VBox>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</VBox>

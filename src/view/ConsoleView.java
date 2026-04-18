@@ -18,7 +18,7 @@ public class ConsoleView {
     public void afficherCatalogue(Catalogue catalogue) {
         System.out.println("--- Catalogue Musical ---");
         for (Morceau m : catalogue.getMorceaux()) {
-            System.out.println(m.getTitre() + " - " + m.getInterprete().getNom());
+            System.out.println(m.getTitre() + " - " + m.getInterprete());
         }
     }
 

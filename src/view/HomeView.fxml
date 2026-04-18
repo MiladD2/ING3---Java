@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Bienvenue sur JAVAZIK" />
+      <Label text="Découvrez les derniers morceaux et albums." />
+      <FlowPane fx:id="recentItemsPane" hgap="20.0" vgap="20.0" />
+   </children>
+</VBox>
