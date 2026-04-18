@@ -71,6 +71,22 @@ public class MainController {
         return system.getCatalogue().getMorceaux();
     }
 
+    public List<Album> getTousLesAlbums() {
+        return system.getCatalogue().getAlbums();
+    }
+
+    public List<Artiste> getTousLesArtistes() {
+        return system.getCatalogue().getArtistes();
+    }
+
+    public List<Groupe> getTousLesGroupes() {
+        return system.getCatalogue().getGroupes();
+    }
+
+    public List<Groupe> rechercherGroupes(String query) {
+        return system.getCatalogue().rechercherGroupesParNom(query);
+    }
+
     // --- Listening ---
 
     public void ecouterMorceau(Morceau morceau) {

@@ -81,3 +81,32 @@
 .list-cell:filled:selected {
     -fx-background-color: #3e3e3e;
 }
+
+/* Sliders Style */
+.slider .track {
+    -fx-background-color: #3e3e3e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5;
+    -fx-pref-height: 4;
+}
+
+.slider .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+    -fx-opacity: 0; /* Hidden by default, show on hover */
+}
+
+.slider:hover .thumb {
+    -fx-opacity: 1;
+}
+
+/* Custom green progress on the left */
+.slider {
+    -fx-padding: 0;
+}
+
+/* We use a trick with linear-gradient for the track to simulate progress */
+/* This is better handled in Java code by updating the style dynamically or using a custom skin, 
+   but we can set a base style here. */

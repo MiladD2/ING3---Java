@@ -4,12 +4,29 @@
 
 <VBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox spacing="10.0">
+      <VBox spacing="10.0">
          <children>
-            <TextField fx:id="searchBar" promptText="Rechercher un morceau, artiste..." HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" onAction="#handleSearch" styleClass="button-primary" text="Rechercher" />
+            <HBox spacing="10.0">
+               <children>
+                  <TextField fx:id="searchBar" promptText="Rechercher un morceau, artiste..." HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#handleSearch" styleClass="button-primary" text="Rechercher" />
+               </children>
+            </HBox>
+            <HBox spacing="10.0">
+               <children>
+                  <ToggleButton fx:id="filterAll" mnemonicParsing="false" selected="true" text="Tous">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="searchFilters" />
+                     </toggleGroup>
+                  </ToggleButton>
+                  <ToggleButton fx:id="filterMorceau" mnemonicParsing="false" text="Morceaux" toggleGroup="$searchFilters" />
+                  <ToggleButton fx:id="filterAlbum" mnemonicParsing="false" text="Albums" toggleGroup="$searchFilters" />
+                  <ToggleButton fx:id="filterArtiste" mnemonicParsing="false" text="Artistes" toggleGroup="$searchFilters" />
+                  <ToggleButton fx:id="filterGroupe" mnemonicParsing="false" text="Groupes" toggleGroup="$searchFilters" />
+               </children>
+            </HBox>
          </children>
-      </HBox>
+      </VBox>
       <ListView fx:id="searchResults" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>
