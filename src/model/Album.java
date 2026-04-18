@@ -30,6 +30,18 @@ public class Album {
         this.morceaux = new ArrayList<>();
     }
 
+    public Album(String titre) {
+
+        if (titre == null || titre.isBlank()) {
+            throw new IllegalArgumentException("Le titre de l'album est obligatoire.");
+        }
+
+        this.id = 0;
+        this.titre = titre;
+        this.anneeSortie = 0000;
+        this.morceaux = new ArrayList<>();
+    }
+
     public int getId() {
         return id;
     }

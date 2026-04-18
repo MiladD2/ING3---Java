@@ -21,6 +21,17 @@ public class Artiste {
         this.biographie = biographie == null ? "" : biographie;
     }
 
+    public Artiste(String nom) {
+
+        if (nom == null || nom.isBlank()) {
+            throw new IllegalArgumentException("Le nom de l'artiste est obligatoire.");
+        }
+
+        this.id = 0;
+        this.nom = nom;
+        this.biographie = "zebi";
+    }
+
     public int getId() {
         return id;
     }
