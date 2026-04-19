@@ -9,6 +9,12 @@ public class Ecoute implements Serializable {
     private final LocalDateTime dateHeure;
     private final Morceau morceau;
 
+    /**
+     * Construit une écoute avec la date et l'heure courantes.
+     *
+     * @param morceau le morceau écouté
+     * @throws IllegalArgumentException si le morceau est nul
+     */
     public Ecoute(Morceau morceau) {
         if (morceau == null) {
             throw new IllegalArgumentException("Le morceau ne peut pas etre null.");
@@ -17,6 +23,13 @@ public class Ecoute implements Serializable {
         this.dateHeure = LocalDateTime.now();
     }
 
+    /**
+     * Construit une écoute avec une date et une heure données.
+     *
+     * @param morceau le morceau écouté
+     * @param dateHeure la date et l'heure de l'écoute
+     * @throws IllegalArgumentException si le morceau ou la date sont nuls
+     */
     public Ecoute(Morceau morceau, LocalDateTime dateHeure) {
         if (morceau == null) {
             throw new IllegalArgumentException("Le morceau ne peut pas etre null.");
@@ -28,10 +41,20 @@ public class Ecoute implements Serializable {
         this.dateHeure = dateHeure;
     }
 
+    /**
+     * Retourne la date et l'heure de l'écoute.
+     *
+     * @return la date et l'heure de l'écoute
+     */
     public LocalDateTime getDateHeure() {
         return dateHeure;
     }
 
+    /**
+     * Retourne le morceau écouté.
+     *
+     * @return le morceau écouté
+     */
     public Morceau getMorceau() {
         return morceau;
     }

@@ -2,6 +2,8 @@ package model;
 
 import java.io.Serializable;
 
+
+
 public class Evaluation implements Serializable {
     private int note; // Par exemple de 1 à 5
     private String commentaire;

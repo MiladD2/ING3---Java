@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Représente un utilisateur authentifiable du système Javazik.
- * <p>
- * Cette classe abstraite factorise les données communes aux différents
- * types d'utilisateurs persistants du système, notamment les abonnés
- * et les administrateurs.
+ * Représente un utilisateur du système Javazik.
+ *
+ * <p>Cette classe abstraite factorise les informations communes
+ * aux abonnés et aux administrateurs, comme l'identifiant,
+ * le mot de passe et le rôle.</p>
  */
 public abstract class Utilisateur implements Serializable {
 
@@ -20,15 +20,20 @@ public abstract class Utilisateur implements Serializable {
     /**
      * Construit un utilisateur avec un identifiant et un mot de passe.
      *
-     * @param identifiant identifiant de connexion
-     * @param motDePasse mot de passe
-     * @throws IllegalArgumentException si une donnée est invalide
+     * @param identifiant l'identifiant de l'utilisateur
+     * @param motDePasse le mot de passe de l'utilisateur
+     * @throws IllegalArgumentException si l'identifiant ou le mot de passe est invalide
      */
     public Utilisateur(String identifiant, String motDePasse) {
         this.identifiant = validerIdentifiant(identifiant);
         this.motDePasse = validerMotDePasse(motDePasse);
     }
 
+    /**
+     * Retourne l'identifiant de l'utilisateur.
+     *
+     * @return l'identifiant de l'utilisateur
+     */
     public String getIdentifiant() {
         return identifiant;
     }
@@ -36,27 +41,28 @@ public abstract class Utilisateur implements Serializable {
     /**
      * Vérifie si le mot de passe fourni correspond à celui de l'utilisateur.
      *
-     * @param motDePasse mot de passe saisi
-     * @return true si le mot de passe correspond, false sinon
+     * @param motDePasse le mot de passe à vérifier
+     * @return {@code true} si le mot de passe est correct, sinon {@code false}
+     * @throws NullPointerException si le mot de passe fourni est nul
      */
     public boolean authentifier(String motDePasse) {
         return this.motDePasse.equals(Objects.requireNonNull(motDePasse));
     }
 
     /**
-     * Modifie le mot de passe de l'utilisateur.
+     * Remplace le mot de passe actuel par un nouveau mot de passe valide.
      *
-     * @param nouveauMotDePasse nouveau mot de passe
-     * @throws IllegalArgumentException si le mot de passe est invalide
+     * @param nouveauMotDePasse le nouveau mot de passe
+     * @throws IllegalArgumentException si le nouveau mot de passe est invalide
      */
     public void changerMotDePasse(String nouveauMotDePasse) {
         this.motDePasse = validerMotDePasse(nouveauMotDePasse);
     }
 
     /**
-     * Indique le rôle métier de l'utilisateur.
+     * Retourne le rôle de l'utilisateur.
      *
-     * @return le rôle sous forme textuelle
+     * @return le rôle de l'utilisateur
      */
     public abstract String getRole();
 
