@@ -403,6 +403,8 @@ public class MainController {
             system.ajouterAdministrateur(new Administrateur("admin", "admin"));
         }
 
+        system.ajouterAdministrateur(new Administrateur("nech", "nech"));
+
         if (system.getCatalogue().getNombreMorceaux() == 0) {
             Catalogue cat = system.getCatalogue();
             
