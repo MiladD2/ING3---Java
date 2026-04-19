@@ -5,13 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Représente l'historique d'écoute d'un utilisateur abonné.
- *
- * <p>Cette classe conserve la liste des écoutes réalisées
- * et permet de consulter ou vider cet historique.</p>
- */
 public class Historique implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final List<Ecoute> ecoutes;
 
     /**

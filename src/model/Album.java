@@ -6,13 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Représente un album du catalogue musical.
- *
- * <p>Un album possède un identifiant, un titre, une année de sortie,
- * un interprète principal et une liste de morceaux.</p>
- */
 public class Album implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String titre;
     private int anneeSortie;

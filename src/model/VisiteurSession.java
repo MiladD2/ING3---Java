@@ -2,13 +2,8 @@ package model;
 
 import java.io.Serializable;
 
-/**
- * Représente une session de visiteur non authentifié.
- *
- * <p>Cette classe permet de limiter le nombre d'écoutes
- * autorisées pendant une session visiteur.</p>
- */
 public class VisiteurSession implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public static final int LIMITE_PAR_DEFAUT = 5;
 
@@ -105,6 +100,7 @@ public class VisiteurSession implements Serializable {
             throw new IllegalArgumentException("Le morceau ne peut pas être nul.");
         }
         enregistrerEcoute();
+        morceau.incrementerNbEcoutes();
     }
 
     /**

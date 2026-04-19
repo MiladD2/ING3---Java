@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: transparent;" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <VBox spacing="30.0" styleClass="details-container">
+         <children>
+            <!-- Header Section -->
+            <HBox spacing="25.0" alignment="CENTER_LEFT">
+               <children>
+                  <!-- Square placeholder for Image/Icon -->
+                  <Region prefHeight="150.0" prefWidth="150.0" style="-fx-background-color: #282828; -fx-background-radius: 10;" />
+                  <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="detailsSubtitle" style="-fx-text-fill: #b3b3b3; -fx-font-weight: bold; -fx-font-size: 14px;" text="TYPE" />
+                        <Label fx:id="detailsTitle" styleClass="label-title" style="-fx-font-size: 48px;" text="Titre Principal" />
+                        <FlowPane fx:id="detailsMetaFlow" hgap="10.0" vgap="5.0">
+                           <children>
+                              <Label fx:id="detailsLabel1" style="-fx-text-fill: white;" text="Info 1" />
+                              <Label text="•" style="-fx-text-fill: #b3b3b3;" />
+                              <Label fx:id="detailsLabel2" style="-fx-text-fill: #b3b3b3;" text="Info 2" />
+                           </children>
+                        </FlowPane>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+<!-- Action Bar -->
+<HBox spacing="20.0" alignment="CENTER_LEFT">
+   <children>
+      <Button fx:id="detailsPlayButton" mnemonicParsing="false" styleClass="button-primary" style="-fx-font-size: 20px; -fx-padding: 10 25;" text="▶" />
+      <Button fx:id="detailsAddPlaylistButton" mnemonicParsing="false" styleClass="button-secondary" style="-fx-font-size: 20px; -fx-padding: 5 15;" text="+" visible="false" />
+
+      <!-- Playlist specific actions -->
+      <HBox fx:id="playlistActionsBox" spacing="10.0" visible="false" managed="false">
+         <children>
+            <Button fx:id="detailsRenameButton" mnemonicParsing="false" styleClass="button-secondary" text="✏" />
+            <Button fx:id="detailsDeleteButton" mnemonicParsing="false" styleClass="button-secondary" style="-fx-text-fill: #ff4444; -fx-border-color: #ff4444;" text="🗑" />
+         </children>
+      </HBox>
+   </children>
+</HBox>
+
+
+            <!-- Dynamic Content Sections -->
+            <VBox fx:id="detailsContentSections" spacing="25.0">
+               <children>
+                  <!-- Section Artistes (Membres ou Interprètes) -->
+                  <VBox fx:id="sectionArtistes" spacing="10.0" visible="false" managed="false">
+                     <children>
+                        <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" text="Artistes" />
+                        <FlowPane fx:id="artistsFlowPane" hgap="15.0" vgap="15.0" />
+                     </children>
+                  </VBox>
+
+                  <!-- Section Morceaux -->
+                  <VBox fx:id="sectionMorceaux" spacing="10.0" visible="false" managed="false">
+                     <children>
+                        <Label fx:id="morceauxTitleLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" text="Morceaux" />
+                        <VBox fx:id="morceauxVBox" spacing="2.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+         </padding>
+      </VBox>
+   </content>
+</ScrollPane>

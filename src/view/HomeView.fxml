@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="40.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <!-- Section Artistes et Groupes -->
+      <VBox spacing="15.0">
+         <children>
+            <Label styleClass="label-title" text="Artistes et Groupes" />
+            <ScrollPane fitToHeight="true" minHeight="220.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" vbarPolicy="NEVER">
+               <content>
+                  <HBox fx:id="artistsHomePane" spacing="20.0" style="-fx-padding: 0 0 15 0;" />
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+
+      <!-- Section Albums -->
+      <VBox spacing="15.0">
+         <children>
+            <Label styleClass="label-title" text="Albums" />
+            <ScrollPane fitToHeight="true" minHeight="220.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" vbarPolicy="NEVER">
+               <content>
+                  <HBox fx:id="albumsHomePane" spacing="20.0" style="-fx-padding: 0 0 15 0;" />
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+
+      <!-- Section Morceaux -->
+      <VBox spacing="15.0">
+         <children>
+            <Label styleClass="label-title" text="Morceaux" />
+            <ScrollPane fitToHeight="true" minHeight="220.0" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" vbarPolicy="NEVER">
+               <content>
+                  <HBox fx:id="songsHomePane" spacing="20.0" style="-fx-padding: 0 0 15 0;" />
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+
+      <!-- Section Recommandations (Bonus) -->
+      <VBox fx:id="recommandationsSection" spacing="15.0" visible="false" managed="false">
+         <children>
+            <Label styleClass="label-title" text="Pour vous" />
+            <HBox fx:id="recommandationsPane" spacing="20.0" />
+         </children>
+      </VBox>
+   </children>
+</VBox>

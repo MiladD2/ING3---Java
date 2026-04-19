@@ -6,13 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Représente une playlist créée par un abonné.
- *
- * <p>Une playlist possède un identifiant, un nom
- * et une liste de morceaux sans doublons.</p>
- */
 public class PlayList implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String nom;
     private final List<Morceau> morceaux;

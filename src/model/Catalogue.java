@@ -5,14 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Représente le catalogue musical principal du système.
- *
- * <p>Cette classe stocke les morceaux, albums, artistes et groupes,
- * et fournit les opérations de recherche, de consultation
- * et de gestion associées.</p>
- */
 public class Catalogue implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final List<Morceau> morceaux;
     private final List<Album> albums;

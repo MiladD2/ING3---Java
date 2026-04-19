@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="20.0">
+         <children>
+            <Label styleClass="label-title" text="Ajouter au catalogue" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onAction="#showAdminDashboard" styleClass="button-secondary" text="Fermer" />
+         </children>
+      </HBox>
+
+      <HBox spacing="10.0">
+         <children>
+            <ToggleButton fx:id="addTypeArtiste" mnemonicParsing="false" selected="true" text="Artiste">
+               <toggleGroup>
+                  <ToggleGroup fx:id="addEntityGroup" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="addTypeGroupe" mnemonicParsing="false" text="Groupe" toggleGroup="$addEntityGroup" />
+            <ToggleButton fx:id="addTypeAlbum" mnemonicParsing="false" text="Album" toggleGroup="$addEntityGroup" />
+            <ToggleButton fx:id="addTypeMorceau" mnemonicParsing="false" text="Morceau" toggleGroup="$addEntityGroup" />
+         </children>
+      </HBox>
+
+      <HBox spacing="30.0" VBox.vgrow="ALWAYS">
+         <children>
+            <!-- Liste des existants -->
+            <VBox spacing="10.0" prefWidth="350.0">
+               <children>
+                  <Label style="-fx-font-weight: bold; -fx-text-fill: #b3b3b3;" text="Éléments existants" />
+                  <ListView fx:id="existingEntitiesList" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
+
+            <!-- Formulaire -->
+            <VBox spacing="20.0" HBox.hgrow="ALWAYS" style="-fx-background-color: #181818; -fx-padding: 20; -fx-background-radius: 10;">
+               <children>
+                  <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Nouveau" />
+                  <GridPane fx:id="addEntityForm" hgap="15.0" vgap="15.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="120.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
+                    </columnConstraints>
+                    <!-- Champs dynamiques gérés par le contrôleur -->
+                  </GridPane>
+                  <Region VBox.vgrow="ALWAYS" />
+                  <HBox alignment="CENTER_RIGHT" spacing="15.0">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#handleSaveEntity" styleClass="button-primary" prefWidth="150.0" text="Enregistrer" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

@@ -3,14 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Représente un morceau du catalogue musical.
- *
- * <p>Un morceau possède un identifiant, un titre, une durée,
- * un genre, un nombre d'écoutes et un interprète
- * qui peut être un artiste ou un groupe.</p>
- */
 public class Morceau implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String titre;
     private int dureeSecondes;

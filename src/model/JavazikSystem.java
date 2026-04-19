@@ -7,13 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Représente le système principal de l'application Javazik.
- *
- * <p>Cette classe centralise le catalogue, les utilisateurs,
- * les connexions et la gestion de la session visiteur.</p>
- */
 public class JavazikSystem implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final Catalogue catalogue;
     private final Map<String, Utilisateur> utilisateurs;

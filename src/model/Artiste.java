@@ -3,13 +3,8 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
-/**
- * Représente un artiste solo du catalogue musical.
- *
- * <p>Un artiste possède un identifiant, un nom, une biographie
- * et peut éventuellement appartenir à un groupe.</p>
- */
 public class Artiste implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String nom;
     private String biographie;

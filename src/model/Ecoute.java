@@ -4,13 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * Représente une écoute d'un morceau.
- *
- * <p>Une écoute mémorise le morceau concerné
- * ainsi que la date et l'heure de l'écoute.</p>
- */
 public class Ecoute implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final LocalDateTime dateHeure;
     private final Morceau morceau;
 

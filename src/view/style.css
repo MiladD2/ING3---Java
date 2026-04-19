@@ -1,0 +1,124 @@
+.root {
+    -fx-base: #121212;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-accent: #1db954; /* Spotify green */
+    -fx-focus-color: #1db954;
+}
+
+.sidebar {
+    -fx-background-color: #000000;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #b3b3b3;
+    -fx-font-size: 14px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 20;
+}
+
+.nav-button:hover {
+    -fx-text-fill: white;
+}
+
+.toggle-button {
+    -fx-background-color: #282828;
+    -fx-text-fill: #b3b3b3;
+    -fx-background-radius: 20;
+    -fx-padding: 5 15;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #1db954;
+    -fx-text-fill: white;
+}
+
+.active-nav-button {
+    -fx-text-fill: white;
+    -fx-background-color: #282828;
+}
+
+.player-bar {
+    -fx-background-color: #181818;
+    -fx-border-color: #282828 transparent transparent transparent;
+}
+
+.morceau-card {
+    -fx-background-color: #181818;
+    -fx-padding: 15;
+    -fx-background-radius: 8;
+}
+
+.morceau-card:hover {
+    -fx-background-color: #282828;
+}
+
+.button-primary {
+    -fx-background-color: #1db954;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 50;
+    -fx-padding: 10 20;
+}
+
+.button-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-border-color: #b3b3b3;
+    -fx-border-radius: 50;
+    -fx-padding: 10 20;
+}
+
+.text-field {
+    -fx-background-color: #3e3e3e;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #b3b3b3;
+}
+
+.list-view {
+    -fx-background-color: #181818;
+    -fx-border-color: #282828;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #282828;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #3e3e3e;
+}
+
+/* Sliders Style */
+.slider .track {
+    -fx-background-color: #3e3e3e;
+    -fx-background-insets: 0;
+    -fx-background-radius: 5;
+    -fx-pref-height: 4;
+}
+
+.slider .thumb {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-pref-width: 12;
+    -fx-pref-height: 12;
+    -fx-opacity: 0; /* Hidden by default, show on hover */
+}
+
+.slider:hover .thumb {
+    -fx-opacity: 1;
+}
+
+/* Custom green progress on the left */
+.slider {
+    -fx-padding: 0;
+}
+
+/* We use a trick with linear-gradient for the track to simulate progress */
+/* This is better handled in Java code by updating the style dynamically or using a custom skin, 
+   but we can set a base style here. */

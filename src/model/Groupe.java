@@ -6,13 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Représente un groupe musical du catalogue.
- *
- * <p>Un groupe possède un identifiant, un nom, une description
- * et une liste de membres.</p>
- */
 public class Groupe implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final int id;
     private String nom;
     private String description;
