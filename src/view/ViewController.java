@@ -55,12 +55,12 @@ public class ViewController {
     @FXML private VBox guestCounterBox;
     @FXML private Label guestRemainingLabel;
 
-    // Home
+    // Home Section
     @FXML private HBox artistsHomePane;
     @FXML private HBox albumsHomePane;
     @FXML private HBox songsHomePane;
 
-    // Search
+    // Search Section
     @FXML private ListView<Object> searchResults;
     @FXML private TextField searchBar;
     @FXML private ToggleButton filterAll;
@@ -69,7 +69,7 @@ public class ViewController {
     @FXML private ToggleButton filterArtiste;
     @FXML private ToggleButton filterGroupe;
 
-    // Details
+    // Details Section
     @FXML private Label detailsTitle;
     @FXML private Label detailsSubtitle;
     @FXML private Label detailsLabel1;
@@ -82,10 +82,13 @@ public class ViewController {
     @FXML private VBox morceauxVBox;
     @FXML private Label morceauxTitleLabel;
 
-    // Playlists
+    // Playlists Section
     @FXML private ListView<PlayList> playlistList;
 
-    // Admin
+    // History Section
+    @FXML private ListView<Ecoute> historyList;
+
+    // Admin Section
     @FXML private ListView<Morceau> adminCatalogueList;
     @FXML private ListView<Utilisateur> adminUserList;
 
@@ -146,7 +149,7 @@ public class ViewController {
     }
 
     private void updateGuestCounter() {
-        if (staticGuestRemainingLabel != null && mainController != null && mainController.getSystem().estEnModeVisiteur()) {
+        if (staticGuestRemainingLabel != null && mainController != null && mainController.getSystem() != null && mainController.getSystem().estEnModeVisiteur()) {
             int max = VisiteurSession.LIMITE_PAR_DEFAUT;
             int current = mainController.getSystem().getVisiteurSession().getNombreEcoutes();
             staticGuestRemainingLabel.setText((max - current) + " écoutes restantes");
@@ -168,7 +171,7 @@ public class ViewController {
     @FXML private void showHome(ActionEvent event) { loadView("HomeView.fxml"); chargerAccueilSectons(); }
     @FXML private void showSearch(ActionEvent event) { loadView("SearchView.fxml"); configurerListViewGenerique(searchResults); handleSearch(null); }
     @FXML private void showPlaylists(ActionEvent event) { loadView("PlaylistView.fxml"); configurerListViewPlaylists(); }
-    @FXML private void showHistory(ActionEvent event) { System.out.println("History clicked"); }
+    @FXML private void showHistory(ActionEvent event) { loadView("HistoryView.fxml"); configurerListViewHistory(); }
     
     @FXML private void showAdminDashboard(ActionEvent event) {
         loadView("AdminView.fxml");
@@ -185,6 +188,16 @@ public class ViewController {
 
     private void loadView(String fxmlFile) {
         try {
+            // On réinitialise TOUS les champs FXML pour éviter de travailler sur d'anciennes références
+            artistsHomePane = null; albumsHomePane = null; songsHomePane = null;
+            searchResults = null; searchBar = null;
+            detailsTitle = null; detailsSubtitle = null; detailsLabel1 = null; detailsLabel2 = null;
+            detailsPlayButton = null; detailsAddPlaylistButton = null; 
+            sectionArtistes = null; artistsFlowPane = null; sectionMorceaux = null;
+            morceauxVBox = null; morceauxTitleLabel = null;
+            playlistList = null; historyList = null;
+            adminCatalogueList = null; adminUserList = null;
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             loader.setController(this);
             Parent view = loader.load();
@@ -192,7 +205,7 @@ public class ViewController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
-    // --- ACTIONS AUTH ---
+    // --- AUTHENTICATION ---
     @FXML private void handleLogin(ActionEvent event) {
         if (loginField == null || passwordField == null || mainController == null) return;
         String id = loginField.getText(); String pwd = passwordField.getText();
@@ -204,7 +217,7 @@ public class ViewController {
     @FXML private void handleRegister(ActionEvent event) {
         if (loginField == null || passwordField == null || mainController == null) return;
         String id = loginField.getText(); String pwd = passwordField.getText();
-        if (id.isEmpty() || pwd.isEmpty()) { showAlert("Erreur", "Champs vides."); return; }
+        if (id.isEmpty() || pwd.isEmpty()) { showAlert("Erreur", "Veuillez remplir tous les champs."); return; }
         try { mainController.registerAbonne(id, pwd); showAlert("Succès", "Compte créé !"); }
         catch (Exception e) { showAlert("Erreur", e.getMessage()); }
     }
@@ -429,7 +442,7 @@ public class ViewController {
     @FXML private void handleNext(ActionEvent event) { if (!currentQueue.isEmpty() && queueIndex < currentQueue.size()-1) { queueIndex++; playMorceau(currentQueue.get(queueIndex)); } }
     @FXML private void handlePrevious(ActionEvent event) { if (!currentQueue.isEmpty() && queueIndex > 0) { queueIndex--; playMorceau(currentQueue.get(queueIndex)); } else playMorceau(currentMorceau); }
 
-    // --- PLAYLISTS & SEARCH ---
+    // --- PLAYLISTS & SEARCH & HISTORY ---
     private void configurerListViewPlaylists() {
         if (playlistList == null || mainController == null) return;
         Abonne user = mainController.getSystem().getAbonneConnecte();
@@ -447,6 +460,29 @@ public class ViewController {
         loadView("DetailsView.fxml"); if (detailsTitle != null) detailsTitle.setText(pl.getNom());
         if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); }
         populateMorceauxList(pl.getMorceaux());
+    }
+
+    private void configurerListViewHistory() {
+        if (historyList == null || mainController == null) return;
+        Abonne user = mainController.getSystem().getAbonneConnecte();
+        if (user != null) {
+            List<Ecoute> reverseHistory = new ArrayList<>(user.getHistorique().getEcoutes());
+            java.util.Collections.reverse(reverseHistory);
+            historyList.getItems().setAll(reverseHistory);
+        }
+        historyList.setCellFactory(param -> new ListCell<Ecoute>() {
+            @Override protected void updateItem(Ecoute item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) setText(null);
+                else setText(item.getMorceau().getTitre() + " - " + item.getMorceau().getInterprete());
+            }
+        });
+        historyList.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                Ecoute s = historyList.getSelectionModel().getSelectedItem();
+                if (s != null) showDetails(s.getMorceau());
+            }
+        });
     }
 
     private void handleAddToPlaylist(Morceau m) {
@@ -482,6 +518,7 @@ public class ViewController {
     @FXML private void handleSearch(ActionEvent event) {
         if (searchResults == null || mainController == null) return;
         String q = (searchBar != null) ? searchBar.getText() : "";
+        if (q.trim().isEmpty()) return;
         List<Object> r = new ArrayList<>(); boolean all = (filterAll != null && filterAll.isSelected());
         if (all || (filterMorceau != null && filterMorceau.isSelected())) for (Morceau m : mainController.rechercherMorceaux(q)) r.add(m);
         if (all || (filterAlbum != null && filterAlbum.isSelected())) for (Album a : mainController.rechercherAlbums(q)) r.add(a);

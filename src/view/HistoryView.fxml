@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label styleClass="label-title" text="Historique d'écoute" />
+      <Label style="-fx-text-fill: #b3b3b3;" text="Retrouvez ici les morceaux que vous avez écoutés récemment." />
+      <ListView fx:id="historyList" VBox.vgrow="ALWAYS" />
+   </children>
+</VBox>
