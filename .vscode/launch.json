@@ -6,14 +6,14 @@
             "name": "JAVAZIK (Mac)",
             "request": "launch",
             "mainClass": "Main",
-            "vmArgs": "--module-path lib/mac --add-modules javafx.controls,javafx.fxml,javafx.media -Djava.library.path=lib/mac"
+            "vmArgs": "--module-path \"${workspaceFolder}/lib/mac\" --add-modules javafx.controls,javafx.fxml,javafx.media -Djava.library.path=\"${workspaceFolder}/lib/mac\""
         },
         {
             "type": "java",
             "name": "JAVAZIK (Windows)",
             "request": "launch",
             "mainClass": "Main",
-            "vmArgs": "--module-path lib/win --add-modules javafx.controls,javafx.fxml,javafx.media -Djava.library.path=lib/win"
+            "vmArgs": "--module-path \"${workspaceFolder}/lib/win\" --add-modules javafx.controls,javafx.fxml,javafx.media -Djava.library.path=\"${workspaceFolder}/lib/win\""
         }
     ]
 }
