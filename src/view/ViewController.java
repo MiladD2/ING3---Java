@@ -519,10 +519,21 @@ public class ViewController {
     // --- AUTHENTICATION ---
     @FXML private void handleLogin(ActionEvent event) {
         if (loginField == null || passwordField == null || mainController == null) return;
-        String id = loginField.getText(); String pwd = passwordField.getText();
-        String role = (roleComboBox != null) ? roleComboBox.getValue() : "Abonne";
-        if ("Abonné".equals(role) ? mainController.loginAbonne(id, pwd) : mainController.loginAdministrateur(id, pwd)) switchToMainView();
-        else showAlert("Erreur", "Identifiant ou mot de passe incorrect.");
+        String id = loginField.getText().trim(); String pwd = passwordField.getText();
+        String role = (roleComboBox != null && roleComboBox.getValue() != null) ? roleComboBox.getValue() : "Abonné";
+        
+        boolean success = false;
+        if ("Abonné".equals(role)) {
+            success = mainController.loginAbonne(id, pwd);
+        } else {
+            success = mainController.loginAdministrateur(id, pwd);
+        }
+
+        if (success) {
+            switchToMainView();
+        } else {
+            showAlert("Erreur", "Identifiant ou mot de passe incorrect (Vérifiez également votre rôle).");
+        }
     }
     @FXML private void handleRegister(ActionEvent event) { if (loginField == null || passwordField == null || mainController == null) return; String id = loginField.getText(); String pwd = passwordField.getText(); if (id.isEmpty() || pwd.isEmpty()) { showAlert("Erreur", "Veuillez remplir tous les champs."); return; } try { mainController.registerAbonne(id, pwd); showAlert("Succès", "Compte créé !"); } catch (Exception e) { showAlert("Erreur", e.getMessage()); } }
     @FXML private void handleVisitor(ActionEvent event) { if (mainController != null) { mainController.continuerCommeVisiteur(); switchToMainView(); } }

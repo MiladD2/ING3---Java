@@ -4,6 +4,8 @@ import model.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Main Controller for the Javazik application.
@@ -297,16 +299,22 @@ public class MainController {
             for (int i=0; i<Math.min(2, m.size()); i++) results.add(m.get(i));
         }
 
-        // 2. Suggest 1 artist without album
-        Artiste solo = null;
+        // 2. Suggest 1 song from a solo artist (artist without album)
+        Morceau soloSong = null;
         for (Artiste a : system.getCatalogue().getArtistes()) {
             boolean hasAlbum = false;
             for (Album al : system.getCatalogue().getAlbums()) {
                 if (al.getArtiste() != null && al.getArtiste().equals(a)) { hasAlbum = true; break; }
             }
-            if (!hasAlbum) { solo = a; break; }
+            if (!hasAlbum) {
+                List<Morceau> aSongs = system.getCatalogue().getMorceauxDeArtiste(a);
+                if (!aSongs.isEmpty()) {
+                    soloSong = aSongs.get(0);
+                    break;
+                }
+            }
         }
-        if (solo != null) results.add(solo);
+        if (soloSong != null) results.add(soloSong);
 
         return results;
     }

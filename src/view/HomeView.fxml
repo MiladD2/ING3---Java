@@ -5,14 +5,6 @@
 
 <VBox spacing="40.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <!-- Section Recommandations (Bonus) -->
-      <VBox fx:id="recommandationsSection" spacing="15.0" visible="false" managed="false">
-         <children>
-            <Label styleClass="label-title" text="Pour vous (Recommandations)" />
-            <HBox fx:id="recommandationsPane" spacing="20.0" />
-         </children>
-      </VBox>
-
       <!-- Section Artistes et Groupes -->
       <VBox spacing="15.0">
          <children>
@@ -46,6 +38,14 @@
                   <HBox fx:id="songsHomePane" spacing="20.0" style="-fx-padding: 0 0 15 0;" />
                </content>
             </ScrollPane>
+         </children>
+      </VBox>
+
+      <!-- Section Recommandations (Bonus) -->
+      <VBox fx:id="recommandationsSection" spacing="15.0" visible="false" managed="false">
+         <children>
+            <Label styleClass="label-title" text="Pour vous" />
+            <HBox fx:id="recommandationsPane" spacing="20.0" />
          </children>
       </VBox>
    </children>
