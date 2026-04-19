@@ -4,12 +4,11 @@
 # Java
 *.class
 bin/
-*.jar
-*.war
-*.ear
+# Note: we track JARs in lib/
+# *.jar 
 
 # IDEs
-.vscode/
+# .vscode/  <-- removed this to share settings.json
 .idea/
 *.iml
 .project

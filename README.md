@@ -1,18 +1,52 @@
-## Getting Started
+# JAVAZIK - Music Streaming System
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Projet d'Informatique POO - Java (ING3) - ECE Paris.
+Une application de streaming musical inspirée de Spotify/Deezer, développée en Java avec JavaFX.
 
-## Folder Structure
+## 🚀 Fonctionnalités
 
-The workspace contains two folders by default, where:
+### 👤 Visiteur
+*   Consultation du catalogue (Artistes, Groupes, Albums, Morceaux).
+*   Recherche filtrée.
+*   Écoute limitée à 5 morceaux par session.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+### 💎 Abonné
+*   Écoutes illimitées.
+*   Gestion de Playlists personnelles (Créer, Renommer, Ajouter/Retirer des titres, Supprimer).
+*   Historique d'écoute complet.
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+### 🛠 Administrateur
+*   **Gestion du Catalogue** : Ajout/Suppression en cascade (Artistes, Groupes, Albums, Morceaux).
+*   **Gestion des Utilisateurs** : Liste des abonnés, suspension et suppression de comptes.
+*   **Statistiques** : Dashboard automatisé (Nombre d'utilisateurs, artistes, morceaux, total des écoutes).
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## 🛠 Installation & Lancement
 
-## Dependency Management
+### Pré-requis
+*   **Java JDK 17** ou supérieur.
+*   Visual Studio Code avec l'extension **Extension Pack for Java**.
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+### Lancement via VS Code (Recommandé)
+1.  Ouvrir le dossier `ING3---Java` dans VS Code.
+2.  Aller dans le fichier `src/Main.java`.
+3.  Appuyer sur **F5** ou cliquer sur **Run**.
+*La configuration est automatique grâce au fichier `.vscode/settings.json`.*
+
+### Lancement via Ligne de Commande
+Se placer à la racine du projet (`ING3---Java`) et exécuter :
+```bash
+java --module-path lib --add-modules javafx.controls,javafx.fxml,javafx.media -cp "lib/*:out" Main
+```
+
+## 🔐 Identifiants par défaut (Demo)
+*   **Admin** : `admin` / `admin`
+*   **Abonné** : Utilisez le bouton "S'inscrire" dans l'application pour créer votre compte.
+
+## 💻 Compatibilité Système
+Le projet est configuré pour être **Cross-Platform** (Mac & Windows).
+*   Les bibliothèques `.dylib` sont pour macOS.
+*   Les bibliothèques `.dll` sont pour Windows.
+*Toutes les dépendances sont regroupées dans le dossier `lib/`.*
+
+---
+*Développé dans le cadre du module Programmation Orientée Objet (Java).*

@@ -1,0 +1,10 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/*.jar"
+    ],
+    "java.project.sourcePaths": [
+        "src"
+    ],
+    "java.project.outputPath": "out",
+    "java.debug.settings.vmArgs": "--module-path lib --add-modules javafx.controls,javafx.fxml,javafx.media"
+}
