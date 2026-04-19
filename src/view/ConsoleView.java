@@ -169,8 +169,24 @@ public class ConsoleView {
     private void afficherToutLeCatalogue() {
         List<Morceau> tous = controller.getTousLesMorceaux();
         System.out.println("\n--- TOUT LE CATALOGUE ---");
-        for (Morceau m : tous) {
-            System.out.println("- " + m.getTitre() + " (" + m.getInterprete() + ")");
+        if (tous.isEmpty()) {
+            System.out.println("Le catalogue est vide.");
+        } else {
+            for (int i = 0; i < tous.size(); i++) {
+                Morceau m = tous.get(i);
+                System.out.println((i + 1) + ". " + m.getTitre() + " (" + m.getInterprete() + ")");
+            }
+            System.out.print("\nEntrez le numéro du morceau pour l'écouter (0 pour retour) : ");
+            try {
+                int index = Integer.parseInt(scanner.nextLine());
+                if (index > 0 && index <= tous.size()) {
+                    Morceau m = tous.get(index - 1);
+                    controller.ecouterMorceau(m);
+                    simulerLecture(m);
+                }
+            } catch (Exception e) {
+                System.out.println("Choix invalide.");
+            }
         }
     }
 
