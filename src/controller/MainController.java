@@ -238,7 +238,139 @@ public class MainController {
         }
     }
 
-    // --- Persistence ---
+    public void retirerMorceauDePlaylist(String nomPlaylist, Morceau morceau) {
+        if (system.estUnAbonneConnecte()) {
+            system.getAbonneConnecte().retirerMorceauDePlaylist(nomPlaylist, morceau);
+        }
+    }
+
+    // --- Statistics (Bonus) ---
+
+    public List<Object> getRecommandations() {
+        List<Object> results = new ArrayList<>();
+        if (!system.estUnAbonneConnecte()) return results;
+
+        List<Ecoute> history = system.getAbonneConnecte().getHistorique().getEcoutes();
+        if (history.isEmpty()) return results;
+
+        // Count frequencies
+        Map<Album, Integer> albumFreq = new HashMap<>();
+        Map<Artiste, Integer> artistFreq = new HashMap<>();
+        Map<Groupe, Integer> groupFreq = new HashMap<>();
+
+        for (Ecoute e : history) {
+            Morceau m = e.getMorceau();
+            // Count Album
+            for (Album al : system.getCatalogue().getAlbums()) {
+                if (al.getMorceaux().contains(m)) {
+                    albumFreq.put(al, albumFreq.getOrDefault(al, 0) + 1);
+                }
+            }
+            // Count Artist/Group
+            if (m.getArtiste() != null) artistFreq.put(m.getArtiste(), artistFreq.getOrDefault(m.getArtiste(), 0) + 1);
+            if (m.getGroupe() != null) groupFreq.put(m.getGroupe(), groupFreq.getOrDefault(m.getGroupe(), 0) + 1);
+        }
+
+        // Find Top Entity
+        Object topEntity = null;
+        int max = -1;
+
+        for (Map.Entry<Album, Integer> entry : albumFreq.entrySet()) {
+            if (entry.getValue() > max) { max = entry.getValue(); topEntity = entry.getKey(); }
+        }
+        for (Map.Entry<Artiste, Integer> entry : artistFreq.entrySet()) {
+            if (entry.getValue() > max) { max = entry.getValue(); topEntity = entry.getKey(); }
+        }
+        for (Map.Entry<Groupe, Integer> entry : groupFreq.entrySet()) {
+            if (entry.getValue() > max) { max = entry.getValue(); topEntity = entry.getKey(); }
+        }
+
+        // 1. Suggest 2 songs from top entity
+        if (topEntity instanceof Album) {
+            List<Morceau> m = ((Album)topEntity).getMorceaux();
+            for (int i=0; i<Math.min(2, m.size()); i++) results.add(m.get(i));
+        } else if (topEntity instanceof Artiste) {
+            List<Morceau> m = system.getCatalogue().getMorceauxDeArtiste((Artiste)topEntity);
+            for (int i=0; i<Math.min(2, m.size()); i++) results.add(m.get(i));
+        } else if (topEntity instanceof Groupe) {
+            List<Morceau> m = system.getCatalogue().getMorceauxDeGroupe((Groupe)topEntity);
+            for (int i=0; i<Math.min(2, m.size()); i++) results.add(m.get(i));
+        }
+
+        // 2. Suggest 1 artist without album
+        Artiste solo = null;
+        for (Artiste a : system.getCatalogue().getArtistes()) {
+            boolean hasAlbum = false;
+            for (Album al : system.getCatalogue().getAlbums()) {
+                if (al.getArtiste() != null && al.getArtiste().equals(a)) { hasAlbum = true; break; }
+            }
+            if (!hasAlbum) { solo = a; break; }
+        }
+        if (solo != null) results.add(solo);
+
+        return results;
+    }
+
+    public int getEcoutesTotalesArtiste(Artiste art) {
+        int total = 0;
+        for (Morceau m : system.getCatalogue().getMorceauxDeArtiste(art)) {
+            total += m.getNombreEcoutes();
+        }
+        return total;
+    }
+
+    public int getEcoutesTotalesGroupe(Groupe g) {
+        int total = 0;
+        for (Morceau m : system.getCatalogue().getMorceauxDeGroupe(g)) {
+            total += m.getNombreEcoutes();
+        }
+        return total;
+    }
+
+    public int getEcoutesTotalesAlbum(Album al) {
+        int total = 0;
+        for (Morceau m : al.getMorceaux()) {
+            total += m.getNombreEcoutes();
+        }
+        return total;
+    }
+
+    public Morceau getTopMorceau() {
+        Morceau top = null;
+        for (Morceau m : system.getCatalogue().getMorceaux()) {
+            if (top == null || m.getNombreEcoutes() > top.getNombreEcoutes()) top = m;
+        }
+        return top;
+    }
+
+    public Album getTopAlbum() {
+        Album top = null;
+        int maxEcoutes = -1;
+        for (Album al : system.getCatalogue().getAlbums()) {
+            int current = getEcoutesTotalesAlbum(al);
+            if (current > maxEcoutes) {
+                maxEcoutes = current;
+                top = al;
+            }
+        }
+        return top;
+    }
+
+    public Object getTopInterprete() {
+        Object top = null;
+        int maxEcoutes = -1;
+        // Check Artists
+        for (Artiste a : system.getCatalogue().getArtistes()) {
+            int current = getEcoutesTotalesArtiste(a);
+            if (current > maxEcoutes) { maxEcoutes = current; top = a; }
+        }
+        // Check Groups
+        for (Groupe g : system.getCatalogue().getGroupes()) {
+            int current = getEcoutesTotalesGroupe(g);
+            if (current > maxEcoutes) { maxEcoutes = current; top = g; }
+        }
+        return top;
+    }
 
     public void sauvegarderDonnees() {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {

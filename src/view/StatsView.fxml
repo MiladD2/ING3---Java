@@ -10,61 +10,83 @@
       
       <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
          <content>
-            <FlowPane hgap="25.0" vgap="25.0">
+            <VBox spacing="30.0">
                <children>
-                  <!-- Carte Utilisateurs -->
-                  <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
+                  <!-- Section Compteurs Généraux -->
+                  <FlowPane hgap="20.0" vgap="20.0">
                      <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="UTILISATEURS" />
-                        <Label fx:id="statUserCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
+                        <VBox prefHeight="110.0" prefWidth="180.0" style="-fx-background-color: #181818; -fx-background-radius: 10; -fx-alignment: CENTER; -fx-spacing: 5;">
+                           <children>
+                              <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 12px; -fx-font-weight: bold;" text="UTILISATEURS" />
+                              <Label fx:id="statUserCount" style="-fx-text-fill: #1db954; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="110.0" prefWidth="180.0" style="-fx-background-color: #181818; -fx-background-radius: 10; -fx-alignment: CENTER; -fx-spacing: 5;">
+                           <children>
+                              <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 12px; -fx-font-weight: bold;" text="ARTISTES" />
+                              <Label fx:id="statArtistCount" style="-fx-text-fill: #1db954; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="110.0" prefWidth="180.0" style="-fx-background-color: #181818; -fx-background-radius: 10; -fx-alignment: CENTER; -fx-spacing: 5;">
+                           <children>
+                              <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 12px; -fx-font-weight: bold;" text="GROUPES" />
+                              <Label fx:id="statGroupCount" style="-fx-text-fill: #1db954; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="110.0" prefWidth="180.0" style="-fx-background-color: #181818; -fx-background-radius: 10; -fx-alignment: CENTER; -fx-spacing: 5;">
+                           <children>
+                              <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 12px; -fx-font-weight: bold;" text="ALBUMS" />
+                              <Label fx:id="statAlbumCount" style="-fx-text-fill: #1db954; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="110.0" prefWidth="180.0" style="-fx-background-color: #181818; -fx-background-radius: 10; -fx-alignment: CENTER; -fx-spacing: 5;">
+                           <children>
+                              <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 12px; -fx-font-weight: bold;" text="MORCEAUX" />
+                              <Label fx:id="statSongCount" style="-fx-text-fill: #1db954; -fx-font-size: 28px; -fx-font-weight: bold;" text="0" />
+                           </children>
+                        </VBox>
+                        <VBox prefHeight="110.0" prefWidth="420.0" style="-fx-background-color: #1db954; -fx-background-radius: 10; -fx-alignment: CENTER; -fx-spacing: 5;">
+                           <children>
+                              <Label style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="ÉCOUTES TOTALES PLATEFORME" />
+                              <Label fx:id="statTotalPlays" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;" text="0" />
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
-                  
-                  <!-- Carte Artistes -->
-                  <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
-                     <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="ARTISTES" />
-                        <Label fx:id="statArtistCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
-                     </children>
-                  </VBox>
+                  </FlowPane>
 
-                  <!-- Carte Groupes -->
-                  <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
+                  <!-- Section Palmarès (Bonus) -->
+                  <VBox spacing="15.0">
                      <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="GROUPES" />
-                        <Label fx:id="statGroupCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
-                     </children>
-                  </VBox>
-
-                  <!-- Carte Albums -->
-                  <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
-                     <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="ALBUMS" />
-                        <Label fx:id="statAlbumCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
-                     </children>
-                  </VBox>
-                  
-                  <!-- Carte Morceaux -->
-                  <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
-                     <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="MORCEAUX" />
-                        <Label fx:id="statSongCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
-                     </children>
-                  </VBox>
-                  
-                  <!-- Carte Écoutes Totales -->
-                  <VBox prefHeight="150.0" prefWidth="465.0" style="-fx-background-color: #1db954; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
-                     <children>
-                        <Label style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="ÉCOUTES TOTALES" />
-                        <Label fx:id="statTotalPlays" style="-fx-text-fill: white; -fx-font-size: 48px; -fx-font-weight: bold;" text="0" />
-                        <Label style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 12px;" text="Cumul de toutes les lectures sur JAVAZIK" />
+                        <Label style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;" text="🏆 PALMARÈS" />
+                        <HBox spacing="20.0">
+                           <children>
+                              <VBox prefHeight="150.0" prefWidth="320.0" style="-fx-background-color: #282828; -fx-background-radius: 12; -fx-padding: 20; -fx-spacing: 10;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 13px;" text="Top Artiste / Groupe" />
+                                    <Label fx:id="statTopInterprete" wrapText="true" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="N/A" />
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="150.0" prefWidth="320.0" style="-fx-background-color: #282828; -fx-background-radius: 12; -fx-padding: 20; -fx-spacing: 10;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 13px;" text="Top Album" />
+                                    <Label fx:id="statTopAlbum" wrapText="true" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="N/A" />
+                                 </children>
+                              </VBox>
+                              <VBox prefHeight="150.0" prefWidth="320.0" style="-fx-background-color: #282828; -fx-background-radius: 12; -fx-padding: 20; -fx-spacing: 10;">
+                                 <children>
+                                    <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 13px;" text="Top Morceau" />
+                                    <Label fx:id="statTopSong" wrapText="true" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" text="N/A" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
                <padding>
-                  <Insets bottom="20.0" left="10.0" right="20.0" top="10.0" />
+                  <Insets bottom="30.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-            </FlowPane>
+            </VBox>
          </content>
       </ScrollPane>
    </children>
