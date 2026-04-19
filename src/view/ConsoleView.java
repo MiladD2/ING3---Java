@@ -39,7 +39,7 @@ public class ConsoleView {
         }
     }
 
-    // --- AUTHENTIFICATION ---
+    // --- AUTHENTICATION ---
 
     private void menuLoginAbonne() {
         System.out.print("Identifiant : ");
@@ -106,18 +106,20 @@ public class ConsoleView {
         while (!retour) {
             System.out.println("\n--- MENU ABONNÉ (" + controller.getSystem().getAbonneConnecte().getIdentifiant() + ") ---");
             System.out.println("1. Rechercher / Écouter");
-            System.out.println("2. Mes Playlists");
-            System.out.println("3. Mon Historique");
-            System.out.println("4. Recommandations (Bonus)");
-            System.out.println("5. Déconnexion");
+            System.out.println("2. Voir tout le catalogue");
+            System.out.println("3. Mes Playlists");
+            System.out.println("4. Mon Historique");
+            System.out.println("5. Pour vous (Recommandations)");
+            System.out.println("6. Déconnexion");
             System.out.print("Choix : ");
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1" -> rechercherEtEcouter();
-                case "2" -> menuGestionPlaylists();
-                case "3" -> afficherHistorique();
-                case "4" -> afficherRecommandations();
-                case "5" -> { controller.deconnecter(); retour = true; }
+                case "2" -> afficherToutLeCatalogue();
+                case "3" -> menuGestionPlaylists();
+                case "4" -> afficherHistorique();
+                case "5" -> afficherRecommandations();
+                case "6" -> { controller.deconnecter(); retour = true; }
             }
         }
     }
@@ -127,16 +129,18 @@ public class ConsoleView {
         while (!retour) {
             System.out.println("\n--- DASHBOARD ADMINISTRATEUR ---");
             System.out.println("1. Statistiques Globales");
-            System.out.println("2. Gérer les utilisateurs");
-            System.out.println("3. Supprimer un morceau du catalogue");
-            System.out.println("4. Déconnexion");
+            System.out.println("2. Voir tout le catalogue");
+            System.out.println("3. Gérer les utilisateurs");
+            System.out.println("4. Supprimer un morceau du catalogue");
+            System.out.println("5. Déconnexion");
             System.out.print("Choix : ");
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1" -> afficherStatsAdmin();
-                case "2" -> menuGestionUtilisateurs();
-                case "3" -> menuSuppressionCatalogue();
-                case "4" -> { controller.deconnecter(); retour = true; }
+                case "2" -> afficherToutLeCatalogue();
+                case "3" -> menuGestionUtilisateurs();
+                case "4" -> menuSuppressionCatalogue();
+                case "5" -> { controller.deconnecter(); retour = true; }
             }
         }
     }
@@ -192,12 +196,12 @@ public class ConsoleView {
 
     private void simulerLecture(Morceau m) {
         System.out.println("\nLecture de : " + m.getTitre() + "...");
-        int dureeSimulee = 10; // On simule 10 secondes pour l'exemple
+        int dureeSimulee = 10;
         for (int i = 0; i <= dureeSimulee; i++) {
             int pourcent = (i * 100) / dureeSimulee;
             String barre = "=".repeat(i) + " ".repeat(dureeSimulee - i);
             System.out.print("\r[" + barre + "] " + pourcent + "%");
-            try { Thread.sleep(500); } catch (InterruptedException e) {}
+            try { Thread.sleep(300); } catch (InterruptedException e) {}
         }
         System.out.println("\nLecture terminée !");
     }
@@ -238,7 +242,6 @@ public class ConsoleView {
         else {
             for (Object r : recs) {
                 if (r instanceof Morceau) System.out.println("[Son] " + ((Morceau)r).getTitre() + " - " + ((Morceau)r).getInterprete());
-                else if (r instanceof Artiste) System.out.println("[Artiste] " + ((Artiste)r).getNom());
             }
         }
     }
@@ -246,15 +249,27 @@ public class ConsoleView {
     // --- GESTION ADMIN ---
 
     private void afficherStatsAdmin() {
-        System.out.println("\n--- STATISTIQUES PLATEFORME ---");
+        System.out.println("\n====================================");
+        System.out.println("   STATISTIQUES GLOBALES JAVAZIK");
+        System.out.println("====================================");
         JavazikSystem sys = controller.getSystem();
         System.out.println("Utilisateurs : " + sys.getNombreAbonnes());
-        System.out.println("Morceaux : " + sys.getCatalogue().getNombreMorceaux());
-        System.out.println("Top Morceau : " + (controller.getTopMorceau() != null ? controller.getTopMorceau().getTitre() : "N/A"));
+        System.out.println("Artistes     : " + sys.getCatalogue().getArtistes().size());
+        System.out.println("Groupes      : " + sys.getCatalogue().getGroupes().size());
+        System.out.println("Albums       : " + sys.getCatalogue().getAlbums().size());
+        System.out.println("Morceaux     : " + sys.getCatalogue().getNombreMorceaux());
         
         int totalEcoutes = 0;
         for (Morceau m : sys.getCatalogue().getMorceaux()) totalEcoutes += m.getNombreEcoutes();
-        System.out.println("Total écoutes plateformes : " + totalEcoutes);
+        System.out.println("Écoutes Totales : " + totalEcoutes);
+
+        System.out.println("\n--- 🏆 PALMARÈS ---");
+        Object topInt = controller.getTopInterprete();
+        String nameInt = topInt == null ? "N/A" : (topInt instanceof Artiste ? ((Artiste)topInt).getNom() : ((Groupe)topInt).getNom());
+        System.out.println("Top Artiste/Groupe : " + nameInt);
+        System.out.println("Top Album          : " + (controller.getTopAlbum() != null ? controller.getTopAlbum().getTitre() : "N/A"));
+        System.out.println("Top Morceau        : " + (controller.getTopMorceau() != null ? controller.getTopMorceau().getTitre() : "N/A"));
+        System.out.println("====================================");
     }
 
     private void menuGestionUtilisateurs() {
