@@ -1,4 +1,4 @@
-# JAVAZIK - Music Streaming System
+# JAVAZIK - Music Streaming App
 
 Projet d'Informatique POO - Java (ING3) - ECE Paris.
 Une application de streaming musical inspirée de Spotify/Deezer, développée en Java avec JavaFX.
@@ -40,7 +40,7 @@ java --module-path lib --add-modules javafx.controls,javafx.fxml,javafx.media -c
 
 ## 🔐 Identifiants par défaut (Demo)
 *   **Admin** : `admin` / `admin`
-*   **Abonné** : Utilisez le bouton "S'inscrire" dans l'application pour créer votre compte.
+*   **Abonné** : `test` / `test` ou utilisez le bouton "S'inscrire" dans l'application pour créer votre compte.
 
 ## 💻 Compatibilité Système
 Le projet est configuré pour être **Cross-Platform** (Mac & Windows).
