@@ -2,7 +2,7 @@ package model;
 
 import java.io.Serializable;
 
-public class Administrateur extends Utilisateur implements Serializable {
+public class Administrateur extends Utilisateur  {
 
     public Administrateur(String identifiant, String motDePasse) {
         super(identifiant, motDePasse);
