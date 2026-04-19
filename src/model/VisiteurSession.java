@@ -1,6 +1,8 @@
 package model;
 
-public class VisiteurSession {
+import java.io.Serializable;
+
+public class VisiteurSession implements Serializable {
 
     public static final int LIMITE_PAR_DEFAUT = 5;
 

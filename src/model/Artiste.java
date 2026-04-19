@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Artiste {
+public class Artiste implements Serializable{
     private final int id;
     private String nom;
     private String biographie;

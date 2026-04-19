@@ -1,10 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Historique {
+public class Historique implements Serializable{
     private final List<Ecoute> ecoutes;
 
     public Historique() {
