@@ -1,6 +1,7 @@
 {
     "java.project.referencedLibraries": [
-        "lib/mac/*.jar"
+        "lib/mac/*.jar",
+        "lib/win/*.jar"
     ],
     "java.project.sourcePaths": [
         "src"
