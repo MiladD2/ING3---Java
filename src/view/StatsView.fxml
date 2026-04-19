@@ -20,14 +20,22 @@
                      </children>
                   </VBox>
                   
-                  <!-- Carte Morceaux -->
+                  <!-- Carte Artistes -->
                   <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
                      <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="MORCEAUX" />
-                        <Label fx:id="statSongCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
+                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="ARTISTES" />
+                        <Label fx:id="statArtistCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
                      </children>
                   </VBox>
-                  
+
+                  <!-- Carte Groupes -->
+                  <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
+                     <children>
+                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="GROUPES" />
+                        <Label fx:id="statGroupCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
+                     </children>
+                  </VBox>
+
                   <!-- Carte Albums -->
                   <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
                      <children>
@@ -36,11 +44,11 @@
                      </children>
                   </VBox>
                   
-                  <!-- Carte Groupes -->
+                  <!-- Carte Morceaux -->
                   <VBox prefHeight="130.0" prefWidth="220.0" style="-fx-background-color: #181818; -fx-background-radius: 12; -fx-alignment: CENTER; -fx-spacing: 5; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 5);">
                      <children>
-                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="GROUPES" />
-                        <Label fx:id="statGroupCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
+                        <Label style="-fx-text-fill: #b3b3b3; -fx-font-size: 14px; -fx-font-weight: bold;" text="MORCEAUX" />
+                        <Label fx:id="statSongCount" style="-fx-text-fill: #1db954; -fx-font-size: 36px; -fx-font-weight: bold;" text="0" />
                      </children>
                   </VBox>
                   

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class ViewController {
 
@@ -57,8 +58,9 @@ public class ViewController {
     @FXML private VBox guestCounterBox;
     @FXML private Label guestRemainingLabel;
 
-    // Stats View
+    // Stats View Labels
     @FXML private Label statUserCount;
+    @FXML private Label statArtistCount;
     @FXML private Label statSongCount;
     @FXML private Label statAlbumCount;
     @FXML private Label statGroupCount;
@@ -94,10 +96,18 @@ public class ViewController {
     // Lists
     @FXML private ListView<PlayList> playlistList;
     @FXML private ListView<Ecoute> historyList;
-    @FXML private ListView<Morceau> adminCatalogueList;
-    @FXML private ListView<Abonne> adminUserList;
     
-    // Add Entity
+    // Admin Section
+    @FXML private ListView<Object> adminCatalogueList;
+    @FXML private ListView<Abonne> adminUserList;
+    @FXML private ToggleGroup adminCatalogueFilterGroup;
+    @FXML private ToggleButton adminFilterAll;
+    @FXML private ToggleButton adminFilterGroupes;
+    @FXML private ToggleButton adminFilterArtistes;
+    @FXML private ToggleButton adminFilterAlbums;
+    @FXML private ToggleButton adminFilterSongs;
+    
+    // Add Entity View
     @FXML private ToggleGroup addEntityGroup;
     @FXML private ToggleButton addTypeArtiste;
     @FXML private ToggleButton addTypeGroupe;
@@ -189,7 +199,11 @@ public class ViewController {
     
     @FXML private void showAdminDashboard(ActionEvent event) {
         loadView("AdminView.fxml");
-        if (adminCatalogueList != null) { configurerListViewMorceaux(adminCatalogueList); adminCatalogueList.getItems().setAll(mainController.getTousLesMorceaux()); }
+        if (adminCatalogueFilterGroup != null) {
+            adminCatalogueFilterGroup.selectedToggleProperty().addListener((obs, o, n) -> { if (n != null) refreshAdminCatalogueList(); });
+        }
+        configurerListViewAdminCatalogue();
+        refreshAdminCatalogueList();
         if (adminUserList != null) { configurerListViewUtilisateurs(); adminUserList.getItems().setAll(mainController.getSystem().getAbonnes()); }
     }
     
@@ -205,7 +219,6 @@ public class ViewController {
 
     private void loadView(String fxmlFile) {
         try {
-            // Cleanup FXML references
             artistsHomePane = null; albumsHomePane = null; songsHomePane = null;
             searchResults = null; searchBar = null;
             detailsTitle = null; detailsSubtitle = null; detailsLabel1 = null; detailsLabel2 = null;
@@ -214,8 +227,9 @@ public class ViewController {
             sectionArtistes = null; artistsFlowPane = null; sectionMorceaux = null;
             morceauxVBox = null; playlistList = null; historyList = null;
             adminCatalogueList = null; adminUserList = null;
+            adminCatalogueFilterGroup = null;
             addEntityForm = null; existingEntitiesList = null;
-            statUserCount = null; statSongCount = null; statAlbumCount = null; statGroupCount = null; statTotalPlays = null;
+            statUserCount = null; statArtistCount = null; statSongCount = null; statAlbumCount = null; statGroupCount = null; statTotalPlays = null;
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             loader.setController(this);
@@ -246,6 +260,7 @@ public class ViewController {
         if (statUserCount == null || mainController == null) return;
         JavazikSystem sys = mainController.getSystem();
         statUserCount.setText(String.valueOf(sys.getNombreAbonnes()));
+        if (statArtistCount != null) statArtistCount.setText(String.valueOf(sys.getCatalogue().getArtistes().size()));
         statSongCount.setText(String.valueOf(sys.getCatalogue().getNombreMorceaux()));
         statAlbumCount.setText(String.valueOf(sys.getCatalogue().getAlbums().size()));
         statGroupCount.setText(String.valueOf(sys.getCatalogue().getGroupes().size()));
@@ -282,6 +297,64 @@ public class ViewController {
                     deleteBtn.setOnAction(e -> {
                         mainController.supprimerUtilisateur(user.getIdentifiant());
                         adminUserList.getItems().remove(user);
+                    });
+                    setGraphic(root);
+                }
+            }
+        });
+    }
+
+    private void refreshAdminCatalogueList() {
+        if (adminCatalogueList == null) return;
+        List<Object> filtered = new ArrayList<>();
+        JavazikSystem sys = mainController.getSystem();
+        Catalogue cat = sys.getCatalogue();
+
+        boolean showAll = adminFilterAll.isSelected();
+        if (showAll || adminFilterGroupes.isSelected()) filtered.addAll(cat.getGroupes());
+        if (showAll || adminFilterArtistes.isSelected()) filtered.addAll(cat.getArtistes());
+        if (showAll || adminFilterAlbums.isSelected()) filtered.addAll(cat.getAlbums());
+        if (showAll || adminFilterSongs.isSelected()) filtered.addAll(cat.getMorceaux());
+
+        adminCatalogueList.getItems().setAll(filtered);
+    }
+
+    private void configurerListViewAdminCatalogue() {
+        if (adminCatalogueList == null) return;
+        adminCatalogueList.setCellFactory(param -> new ListCell<Object>() {
+            private final HBox root = new HBox(15);
+            private final Label iconLbl = new Label();
+            private final Label nameLbl = new Label();
+            private final Region spacer = new Region();
+            private final Button deleteBtn = new Button("🗑");
+            {
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                deleteBtn.setStyle("-fx-text-fill: #ff4444; -fx-background-color: transparent; -fx-font-size: 14px;");
+                iconLbl.setStyle("-fx-font-size: 10px; -fx-padding: 2 6; -fx-background-radius: 4; -fx-text-fill: white;");
+                nameLbl.setStyle("-fx-text-fill: white;");
+                root.setAlignment(Pos.CENTER_LEFT);
+                root.getChildren().addAll(iconLbl, nameLbl, spacer, deleteBtn);
+            }
+            @Override protected void updateItem(Object item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) setGraphic(null);
+                else {
+                    if (item instanceof Groupe) { iconLbl.setText("GP"); iconLbl.setStyle(iconLbl.getStyle() + "-fx-background-color: #1db954;"); nameLbl.setText(((Groupe)item).getNom()); }
+                    else if (item instanceof Artiste) { iconLbl.setText("AR"); iconLbl.setStyle(iconLbl.getStyle() + "-fx-background-color: #2e77d0;"); nameLbl.setText(((Artiste)item).getNom()); }
+                    else if (item instanceof Album) { iconLbl.setText("AL"); iconLbl.setStyle(iconLbl.getStyle() + "-fx-background-color: #8844ee;"); nameLbl.setText(((Album)item).getTitre()); }
+                    else if (item instanceof Morceau) { iconLbl.setText("SO"); iconLbl.setStyle(iconLbl.getStyle() + "-fx-background-color: #333333;"); nameLbl.setText(((Morceau)item).getTitre() + " - " + ((Morceau)item).getInterprete()); }
+                    
+                    deleteBtn.setOnAction(e -> {
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Supprimer cet élément et ses dépendances ?", ButtonType.YES, ButtonType.NO);
+                        alert.showAndWait().ifPresent(response -> {
+                            if (response == ButtonType.YES) {
+                                if (item instanceof Morceau) mainController.supprimerMorceau((Morceau)item);
+                                else if (item instanceof Album) mainController.supprimerAlbum((Album)item);
+                                else if (item instanceof Artiste) mainController.supprimerArtiste((Artiste)item);
+                                else if (item instanceof Groupe) mainController.supprimerGroupe((Groupe)item);
+                                refreshAdminCatalogueList();
+                            }
+                        });
                     });
                     setGraphic(root);
                 }

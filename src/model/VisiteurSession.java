@@ -54,6 +54,7 @@ public class VisiteurSession implements Serializable {
             throw new IllegalArgumentException("Le morceau ne peut pas être nul.");
         }
         enregistrerEcoute();
+        morceau.incrementerNbEcoutes();
     }
 
     public void reinitialiserSession() {

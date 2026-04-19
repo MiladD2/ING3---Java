@@ -2,6 +2,7 @@ package controller;
 
 import model.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -124,6 +125,8 @@ public class MainController {
     public void supprimerUtilisateur(String id) {
         system.supprimerAbonne(id);
     }
+
+    // --- Catalog Management (Addition) ---
     public void ajouterArtiste(String nom, String bio) {
         system.getCatalogue().ajouterArtiste(new Artiste(getNextArtisteId(), nom, bio));
     }
@@ -146,6 +149,59 @@ public class MainController {
         system.getCatalogue().ajouterMorceau(m);
     }
 
+    // --- Catalog Management (Deletion) ---
+    public void supprimerMorceau(Morceau m) {
+        if (m == null) return;
+        // 1. Retirer des playlists de TOUS les abonnés
+        for (Abonne a : system.getAbonnes()) {
+            for (PlayList p : a.getPlayLists()) {
+                if (p.contient(m)) {
+                    p.retirerMorceau(m);
+                }
+            }
+        }
+        // 2. Retirer de tous les albums
+        for (Album al : system.getCatalogue().getAlbums()) {
+            if (al.getMorceaux().contains(m)) {
+                al.retirerMorceau(m);
+            }
+        }
+        // 3. Retirer du catalogue
+        system.getCatalogue().supprimerMorceau(m);
+    }
+
+    public void supprimerAlbum(Album a) {
+        if (a == null) return;
+        system.getCatalogue().supprimerAlbum(a);
+    }
+
+    public void supprimerArtiste(Artiste art) {
+        if (art == null) return;
+        // 1. Supprimer tous ses morceaux en cascade
+        List<Morceau> morceaux = new ArrayList<>(system.getCatalogue().getMorceauxDeArtiste(art));
+        for (Morceau m : morceaux) supprimerMorceau(m);
+        
+        // 2. Le retirer de son groupe s'il en a un
+        if (art.getGroupe() != null) {
+            Groupe g = art.getGroupe();
+            g.getMembres().remove(art);
+            if (g.getMembres().isEmpty()) supprimerGroupe(g);
+        }
+        // 3. Retirer du catalogue
+        system.getCatalogue().supprimerArtiste(art);
+    }
+
+    public void supprimerGroupe(Groupe g) {
+        if (g == null) return;
+        // 1. Supprimer ses morceaux
+        List<Morceau> morceaux = new ArrayList<>(system.getCatalogue().getMorceauxDeGroupe(g));
+        for (Morceau m : morceaux) supprimerMorceau(m);
+        
+        // 2. Dissoudre le lien avec les membres
+        // 3. Retirer du catalogue
+        system.getCatalogue().supprimerGroupe(g);
+    }
+
     // --- Listening ---
 
     public void ecouterMorceau(Morceau morceau) {
@@ -154,7 +210,6 @@ public class MainController {
         } else if (system.estEnModeVisiteur()) {
             system.getVisiteurSession().ecouterMorceau(morceau);
         }
-        morceau.incrementerNbEcoutes();
     }
 
     // --- Playlist Management ---
@@ -203,16 +258,13 @@ public class MainController {
             }
         }
         
-        // Ensure at least one admin exists for testing
         if (system.getNombreAdministrateurs() == 0) {
             system.ajouterAdministrateur(new Administrateur("admin", "admin"));
         }
 
-        // Add some demo data if catalogue is empty
         if (system.getCatalogue().getNombreMorceaux() == 0) {
             Catalogue cat = system.getCatalogue();
             
-            // 1. THE BEATLES (Groupe)
             Groupe beatles = new Groupe(1, "The Beatles", "Groupe de rock britannique légendaire.");
             Artiste john = new Artiste(101, "John Lennon", "Chanteur et guitariste.");
             Artiste paul = new Artiste(102, "Paul McCartney", "Chanteur et bassiste.");
@@ -235,7 +287,6 @@ public class MainController {
             }
             cat.ajouterAlbum(abbey);
 
-            // 2. QUEEN (Groupe)
             Groupe queen = new Groupe(2, "Queen", "Groupe de rock britannique iconique.");
             Artiste freddie = new Artiste(201, "Freddie Mercury", "Chanteur légendaire.");
             Artiste brian = new Artiste(202, "Brian May", "Guitariste virtuose.");
@@ -253,7 +304,6 @@ public class MainController {
             }
             cat.ajouterAlbum(night);
 
-            // 3. DAFT PUNK (Groupe / Duo)
             Groupe daft = new Groupe(3, "Daft Punk", "Duo de musique électronique français.");
             Artiste thomas = new Artiste(301, "Thomas Bangalter", "Musicien.");
             Artiste guy = new Artiste(302, "Guy-Manuel de Homem-Christo", "Musicien.");
@@ -264,7 +314,6 @@ public class MainController {
             getLucky.definirGroupe(daft);
             cat.ajouterMorceau(getLucky);
 
-            // 4. SOLO ARTIST WITH ALBUM (Michael Jackson)
             Artiste mj = new Artiste(4, "Michael Jackson", "Le Roi de la Pop.");
             cat.ajouterArtiste(mj);
             Album thriller = new Album(3, "Thriller", 1982);
@@ -278,7 +327,6 @@ public class MainController {
             }
             cat.ajouterAlbum(thriller);
 
-            // 5. SOLO ARTIST WITH FEW SONGS (Adele)
             Artiste adele = new Artiste(5, "Adele", "Chanteuse soul britannique.");
             cat.ajouterArtiste(adele);
             Morceau hello = new Morceau(5, "Hello", 295, "Soul");

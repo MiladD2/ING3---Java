@@ -12,13 +12,27 @@
           <!-- Onglet Catalogue -->
           <Tab text="Catalogue">
             <content>
-              <VBox spacing="10.0">
+              <VBox spacing="15.0">
                      <children>
-                        <Button mnemonicParsing="false" onAction="#showAddEntityView" styleClass="button-primary" text="Ajouter au catalogue" />
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#showAddEntityView" styleClass="button-primary" text="+ Ajouter" />
+                              <Separator orientation="VERTICAL" />
+                              <ToggleButton fx:id="adminFilterAll" mnemonicParsing="false" selected="true" text="Tous">
+                                 <toggleGroup>
+                                    <ToggleGroup fx:id="adminCatalogueFilterGroup" />
+                                 </toggleGroup>
+                              </ToggleButton>
+                              <ToggleButton fx:id="adminFilterGroupes" mnemonicParsing="false" text="Groupes" toggleGroup="$adminCatalogueFilterGroup" />
+                              <ToggleButton fx:id="adminFilterArtistes" mnemonicParsing="false" text="Artistes" toggleGroup="$adminCatalogueFilterGroup" />
+                              <ToggleButton fx:id="adminFilterAlbums" mnemonicParsing="false" text="Albums" toggleGroup="$adminCatalogueFilterGroup" />
+                              <ToggleButton fx:id="adminFilterSongs" mnemonicParsing="false" text="Sons" toggleGroup="$adminCatalogueFilterGroup" />
+                           </children>
+                        </HBox>
                         <ListView fx:id="adminCatalogueList" VBox.vgrow="ALWAYS" />
                      </children>
                      <padding>
-                        <Insets top="10.0" />
+                        <Insets top="15.0" />
                      </padding>
                   </VBox>
             </content>
