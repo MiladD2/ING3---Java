@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("=== JAVAZIK - Système de Streaming ===");
+        System.out.println("\n\n\n\n=== JAVAZIK - Système de Streaming ===\n");
         System.out.println("1. Mode Graphique (JavaFX)");
         System.out.println("2. Mode Console");
         System.out.print("Choisissez votre interface (1-2) : ");
