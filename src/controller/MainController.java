@@ -106,6 +106,18 @@ public class MainController {
         }
     }
 
+    public void supprimerPlaylist(String nom) {
+        if (system.estUnAbonneConnecte()) {
+            system.getAbonneConnecte().supprimerPlaylist(nom);
+        }
+    }
+
+    public void renommerPlaylist(String ancienNom, String nouveauNom) {
+        if (system.estUnAbonneConnecte()) {
+            system.getAbonneConnecte().renommerPlaylist(ancienNom, nouveauNom);
+        }
+    }
+
     public void ajouterMorceauAPlaylist(String nomPlaylist, Morceau morceau) {
         if (system.estUnAbonneConnecte()) {
             system.getAbonneConnecte().ajouterMorceauAPlaylist(nomPlaylist, morceau);

@@ -28,14 +28,22 @@
                   </VBox>
                </children>
             </HBox>
+<!-- Action Bar -->
+<HBox spacing="20.0" alignment="CENTER_LEFT">
+   <children>
+      <Button fx:id="detailsPlayButton" mnemonicParsing="false" styleClass="button-primary" style="-fx-font-size: 20px; -fx-padding: 10 25;" text="▶" />
+      <Button fx:id="detailsAddPlaylistButton" mnemonicParsing="false" styleClass="button-secondary" style="-fx-font-size: 20px; -fx-padding: 5 15;" text="+" visible="false" />
 
-            <HBox spacing="20.0" alignment="CENTER_LEFT">
-               <children>
-                  <Button fx:id="detailsPlayButton" mnemonicParsing="false" styleClass="button-primary" style="-fx-font-size: 16px; -fx-padding: 12 30;" text="LIRE" />
-                  <Button fx:id="detailsAddPlaylistButton" mnemonicParsing="false" styleClass="button-secondary" style="-fx-font-size: 20px; -fx-padding: 5 15;" text="+" visible="false" />
-                  <Button mnemonicParsing="false" onAction="#showSearch" styleClass="button-secondary" text="Retour" />
-               </children>
-            </HBox>
+      <!-- Playlist specific actions -->
+      <HBox fx:id="playlistActionsBox" spacing="10.0" visible="false" managed="false">
+         <children>
+            <Button fx:id="detailsRenameButton" mnemonicParsing="false" styleClass="button-secondary" text="✏" />
+            <Button fx:id="detailsDeleteButton" mnemonicParsing="false" styleClass="button-secondary" style="-fx-text-fill: #ff4444; -fx-border-color: #ff4444;" text="🗑" />
+         </children>
+      </HBox>
+   </children>
+</HBox>
+
 
             <!-- Dynamic Content Sections -->
             <VBox fx:id="detailsContentSections" spacing="25.0">

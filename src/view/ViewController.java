@@ -55,12 +55,12 @@ public class ViewController {
     @FXML private VBox guestCounterBox;
     @FXML private Label guestRemainingLabel;
 
-    // Home Section
+    // Home
     @FXML private HBox artistsHomePane;
     @FXML private HBox albumsHomePane;
     @FXML private HBox songsHomePane;
 
-    // Search Section
+    // Search
     @FXML private ListView<Object> searchResults;
     @FXML private TextField searchBar;
     @FXML private ToggleButton filterAll;
@@ -69,26 +69,29 @@ public class ViewController {
     @FXML private ToggleButton filterArtiste;
     @FXML private ToggleButton filterGroupe;
 
-    // Details Section
+    // Details
     @FXML private Label detailsTitle;
     @FXML private Label detailsSubtitle;
     @FXML private Label detailsLabel1;
     @FXML private Label detailsLabel2;
     @FXML private Button detailsPlayButton;
     @FXML private Button detailsAddPlaylistButton;
+    @FXML private HBox playlistActionsBox;
+    @FXML private Button detailsRenameButton;
+    @FXML private Button detailsDeleteButton;
     @FXML private VBox sectionArtistes;
     @FXML private FlowPane artistsFlowPane;
     @FXML private VBox sectionMorceaux;
     @FXML private VBox morceauxVBox;
     @FXML private Label morceauxTitleLabel;
 
-    // Playlists Section
+    // Playlists
     @FXML private ListView<PlayList> playlistList;
 
-    // History Section
+    // History
     @FXML private ListView<Ecoute> historyList;
 
-    // Admin Section
+    // Admin
     @FXML private ListView<Morceau> adminCatalogueList;
     @FXML private ListView<Utilisateur> adminUserList;
 
@@ -144,12 +147,12 @@ public class ViewController {
         if (currentMorceau == null || staticTrackTitle == null) return;
         staticTrackTitle.setText(currentMorceau.getTitre());
         staticTrackArtist.setText(currentMorceau.getInterprete());
-        staticTotalTimeLabel.setText(currentMorceau.getDureeFormatee());
+        if (staticTotalTimeLabel != null) staticTotalTimeLabel.setText(currentMorceau.getDureeFormatee());
         if (staticMainPlayButton != null) staticMainPlayButton.setText(isPlaying ? "⏸" : "▶");
     }
 
     private void updateGuestCounter() {
-        if (staticGuestRemainingLabel != null && mainController != null && mainController.getSystem() != null && mainController.getSystem().estEnModeVisiteur()) {
+        if (staticGuestRemainingLabel != null && mainController != null && mainController.getSystem().estEnModeVisiteur()) {
             int max = VisiteurSession.LIMITE_PAR_DEFAUT;
             int current = mainController.getSystem().getVisiteurSession().getNombreEcoutes();
             staticGuestRemainingLabel.setText((max - current) + " écoutes restantes");
@@ -175,11 +178,11 @@ public class ViewController {
     
     @FXML private void showAdminDashboard(ActionEvent event) {
         loadView("AdminView.fxml");
-        if (adminCatalogueList != null) {
+        if (adminCatalogueList != null && mainController != null) {
             configurerListViewMorceaux(adminCatalogueList);
             adminCatalogueList.getItems().setAll(mainController.getTousLesMorceaux());
         }
-        if (adminUserList != null) {
+        if (adminUserList != null && mainController != null) {
             List<Utilisateur> list = new ArrayList<>();
             for (Abonne a : mainController.getSystem().getAbonnes()) list.add(a);
             adminUserList.getItems().setAll(list);
@@ -188,16 +191,6 @@ public class ViewController {
 
     private void loadView(String fxmlFile) {
         try {
-            // On réinitialise TOUS les champs FXML pour éviter de travailler sur d'anciennes références
-            artistsHomePane = null; albumsHomePane = null; songsHomePane = null;
-            searchResults = null; searchBar = null;
-            detailsTitle = null; detailsSubtitle = null; detailsLabel1 = null; detailsLabel2 = null;
-            detailsPlayButton = null; detailsAddPlaylistButton = null; 
-            sectionArtistes = null; artistsFlowPane = null; sectionMorceaux = null;
-            morceauxVBox = null; morceauxTitleLabel = null;
-            playlistList = null; historyList = null;
-            adminCatalogueList = null; adminUserList = null;
-
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             loader.setController(this);
             Parent view = loader.load();
@@ -299,6 +292,7 @@ public class ViewController {
     public void showDetails(Object item) {
         loadView("DetailsView.fxml");
         boolean isAbonne = mainController != null && mainController.getSystem().estUnAbonneConnecte();
+        if (playlistActionsBox != null) { playlistActionsBox.setVisible(false); playlistActionsBox.setManaged(false); }
         if (item instanceof Morceau) {
             Morceau m = (Morceau) item;
             if (detailsSubtitle != null) detailsSubtitle.setText("MORCEAU"); 
@@ -313,7 +307,7 @@ public class ViewController {
                     artistsFlowPane.getChildren().add(new HBox(5, gp, createEntityLink(m.getGroupe())));
                 }
             }
-            if (detailsPlayButton != null) { detailsPlayButton.setVisible(true); detailsPlayButton.setOnAction(e -> handleItemPlayClick(m)); updatePlayButtonText(m); }
+            if (detailsPlayButton != null) { detailsPlayButton.setOnAction(e -> handleItemPlayClick(m)); updatePlayButtonText(m); }
             if (detailsAddPlaylistButton != null) { detailsAddPlaylistButton.setVisible(isAbonne); detailsAddPlaylistButton.setOnAction(e -> handleAddToPlaylist(m)); }
         } else if (item instanceof Album) {
             Album a = (Album) item;
@@ -323,7 +317,7 @@ public class ViewController {
             if (detailsLabel2 != null) detailsLabel2.setText(a.getAnneeSortie() + " • " + a.getMorceaux().size() + " morceaux");
             if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); }
             populateMorceauxList(a.getMorceaux());
-            if (detailsPlayButton != null) { detailsPlayButton.setVisible(true); detailsPlayButton.setOnAction(e -> playAlbum(a)); }
+            if (detailsPlayButton != null) { detailsPlayButton.setOnAction(e -> playAlbum(a)); }
         } else if (item instanceof Artiste) {
             Artiste art = (Artiste) item;
             if (detailsTitle != null) detailsTitle.setText(art.getNom());
@@ -348,6 +342,16 @@ public class ViewController {
             if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); }
             populateMorceauxList(mainController.getSystem().getCatalogue().getMorceauxDeGroupe(g));
         }
+    }
+
+    private void showPlaylistDetails(PlayList pl) {
+        loadView("DetailsView.fxml"); if (detailsTitle != null) detailsTitle.setText(pl.getNom());
+        if (playlistActionsBox != null) { playlistActionsBox.setVisible(true); playlistActionsBox.setManaged(true); }
+        if (detailsRenameButton != null) detailsRenameButton.setOnAction(e -> handleRenamePlaylist(pl));
+        if (detailsDeleteButton != null) detailsDeleteButton.setOnAction(e -> handleDeletePlaylist(pl));
+        if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); }
+        populateMorceauxList(pl.getMorceaux());
+        if (detailsPlayButton != null) { detailsPlayButton.setOnAction(e -> { if (!pl.getMorceaux().isEmpty()) { currentQueue = new ArrayList<>(pl.getMorceaux()); queueIndex = 0; playMorceau(currentQueue.get(queueIndex)); } }); }
     }
 
     private Hyperlink createEntityLink(Object entity) {
@@ -376,15 +380,15 @@ public class ViewController {
         }
     }
 
-    // --- LECTURE & PLAYER ---
+    // --- PLAYER ---
     private void handleItemPlayClick(Morceau m) {
         if (m == null) return;
         if (m.equals(currentMorceau)) togglePlayPause();
         else { currentQueue.clear(); playMorceau(m); }
-        refreshAllVisibleButtons();
+        refreshViews();
     }
 
-    private void refreshAllVisibleButtons() {
+    private void refreshViews() {
         if (artistsHomePane != null) chargerAccueilSectons();
         if (searchResults != null) searchResults.refresh();
         if (currentMorceau != null) updatePlayButtonText(currentMorceau);
@@ -427,7 +431,7 @@ public class ViewController {
         if (staticMainPlayButton != null) staticMainPlayButton.setText(isPlaying ? "⏸" : "▶");
         if (isPlaying) { if (progressTimeline != null) progressTimeline.play(); else startProgress(); }
         else if (progressTimeline != null) progressTimeline.pause();
-        refreshAllVisibleButtons();
+        refreshViews();
     }
 
     @FXML private void handlePlayPause(ActionEvent event) {
@@ -456,33 +460,20 @@ public class ViewController {
         playlistList.setOnMouseClicked(e -> { if (e.getClickCount() == 2) { PlayList s = playlistList.getSelectionModel().getSelectedItem(); if (s != null) showPlaylistDetails(s); } });
     }
 
-    private void showPlaylistDetails(PlayList pl) {
-        loadView("DetailsView.fxml"); if (detailsTitle != null) detailsTitle.setText(pl.getNom());
-        if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); }
-        populateMorceauxList(pl.getMorceaux());
-    }
-
     private void configurerListViewHistory() {
         if (historyList == null || mainController == null) return;
         Abonne user = mainController.getSystem().getAbonneConnecte();
         if (user != null) {
-            List<Ecoute> reverseHistory = new ArrayList<>(user.getHistorique().getEcoutes());
-            java.util.Collections.reverse(reverseHistory);
-            historyList.getItems().setAll(reverseHistory);
+            List<Ecoute> rev = new ArrayList<>(user.getHistorique().getEcoutes());
+            java.util.Collections.reverse(rev); historyList.getItems().setAll(rev);
         }
         historyList.setCellFactory(param -> new ListCell<Ecoute>() {
             @Override protected void updateItem(Ecoute item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty || item == null) setText(null);
-                else setText(item.getMorceau().getTitre() + " - " + item.getMorceau().getInterprete());
+                if (empty || item == null) setText(null); else setText(item.getMorceau().getTitre() + " - " + item.getMorceau().getInterprete());
             }
         });
-        historyList.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                Ecoute s = historyList.getSelectionModel().getSelectedItem();
-                if (s != null) showDetails(s.getMorceau());
-            }
-        });
+        historyList.setOnMouseClicked(e -> { if (e.getClickCount() == 2) { Ecoute s = historyList.getSelectionModel().getSelectedItem(); if (s != null) showDetails(s.getMorceau()); } });
     }
 
     private void handleAddToPlaylist(Morceau m) {
@@ -527,6 +518,17 @@ public class ViewController {
         searchResults.getItems().setAll(r);
     }
 
+    private void handleRenamePlaylist(PlayList pl) {
+        TextInputDialog d = new TextInputDialog(pl.getNom());
+        d.setTitle("Renommer"); d.showAndWait().ifPresent(n -> { if (!n.trim().isEmpty()) { mainController.renommerPlaylist(pl.getNom(), n); showPlaylistDetails(pl); } });
+    }
+
+    private void handleDeletePlaylist(PlayList pl) {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
+        a.setTitle("Supprimer"); a.setHeaderText("Supprimer " + pl.getNom() + " ?");
+        a.showAndWait().ifPresent(r -> { if (r == ButtonType.OK) { mainController.supprimerPlaylist(pl.getNom()); showPlaylists(null); } });
+    }
+
     private void configurerListViewGenerique(ListView<Object> listView) {
         if (listView == null) return;
         listView.setCellFactory(p -> new ListCell<Object>() {
@@ -547,10 +549,11 @@ public class ViewController {
                 }
             }
         });
+        listView.setOnMouseClicked(e -> { if (e.getClickCount() == 2) { Object s = listView.getSelectionModel().getSelectedItem(); if (s != null) showDetails(s); } });
     }
 
     // --- HELPERS FINAUX ---
-    private void updatePlayButtonText(Morceau m) { if (detailsPlayButton != null) detailsPlayButton.setText((m.equals(currentMorceau) && isPlaying) ? "PAUSE" : "LIRE"); }
+    private void updatePlayButtonText(Morceau m) { if (detailsPlayButton != null) detailsPlayButton.setText((m != null && m.equals(currentMorceau) && isPlaying) ? "⏸" : "▶"); }
     private String formatTime(int s) { return String.format("%d:%02d", s / 60, s % 60); }
     private void showAlert(String t, String c) { Alert a = new Alert(Alert.AlertType.INFORMATION); a.setTitle(t); a.setHeaderText(null); a.setContentText(c); a.showAndWait(); }
 }
