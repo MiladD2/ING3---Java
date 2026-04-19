@@ -1,11 +1,12 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Album {
+public class Album implements Serializable {
     private final int id;
     private String titre;
     private int anneeSortie;

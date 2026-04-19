@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Ecoute {
+public class Ecoute implements Serializable{
     private final LocalDateTime dateHeure;
     private final Morceau morceau;
 

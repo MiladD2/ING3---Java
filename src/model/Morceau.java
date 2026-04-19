@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Morceau {
+public class Morceau implements Serializable {
     private final int id;
     private String titre;
     private int dureeSecondes;
