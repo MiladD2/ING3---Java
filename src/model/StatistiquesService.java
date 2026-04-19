@@ -7,11 +7,23 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Fournit les statistiques du système Javazik.
+ *
+ * <p>Cette classe calcule les statistiques simples et évoluées
+ * à partir des données du catalogue et des utilisateurs.</p>
+ */
 public class StatistiquesService implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final JavazikSystem systeme;
 
+    /**
+     * Construit un service de statistiques associé à un système donné.
+     *
+     * @param systeme le système utilisé pour les calculs
+     * @throws IllegalArgumentException si le système est nul
+     */
     public StatistiquesService(JavazikSystem systeme) {
         if (systeme == null) {
             throw new IllegalArgumentException("Le système ne peut pas être nul.");
@@ -19,34 +31,74 @@ public class StatistiquesService implements Serializable {
         this.systeme = systeme;
     }
 
+    /**
+     * Retourne le nombre total d'utilisateurs.
+     *
+     * @return le nombre d'utilisateurs
+     */
     public int getNombreUtilisateurs() {
         return systeme.getNombreUtilisateurs();
     }
 
+    /**
+     * Retourne le nombre d'abonnés.
+     *
+     * @return le nombre d'abonnés
+     */
     public int getNombreAbonnes() {
         return systeme.getNombreAbonnes();
     }
 
+    /**
+     * Retourne le nombre d'administrateurs.
+     *
+     * @return le nombre d'administrateurs
+     */
     public int getNombreAdministrateurs() {
         return systeme.getNombreAdministrateurs();
     }
 
+    /**
+     * Retourne le nombre de morceaux du catalogue.
+     *
+     * @return le nombre de morceaux
+     */
     public int getNombreMorceaux() {
         return systeme.getCatalogue().getNombreMorceaux();
     }
 
+    /**
+     * Retourne le nombre d'albums du catalogue.
+     *
+     * @return le nombre d'albums
+     */
     public int getNombreAlbums() {
         return systeme.getCatalogue().getNombreAlbums();
     }
 
+    /**
+     * Retourne le nombre d'artistes du catalogue.
+     *
+     * @return le nombre d'artistes
+     */
     public int getNombreArtistes() {
         return systeme.getCatalogue().getNombreArtistes();
     }
 
+    /**
+     * Retourne le nombre de groupes du catalogue.
+     *
+     * @return le nombre de groupes
+     */
     public int getNombreGroupes() {
         return systeme.getCatalogue().getNombreGroupes();
     }
 
+    /**
+     * Calcule le nombre total d'écoutes de tous les morceaux du catalogue.
+     *
+     * @return le nombre total d'écoutes
+     */
     public int getNombreTotalEcoutes() {
         int total = 0;
 
@@ -57,6 +109,13 @@ public class StatistiquesService implements Serializable {
         return total;
     }
 
+    /**
+     * Retourne le nombre d'écoutes d'un morceau.
+     *
+     * @param morceau le morceau concerné
+     * @return le nombre d'écoutes du morceau
+     * @throws IllegalArgumentException si le morceau est nul
+     */
     public int getNombreEcoutesPourMorceau(Morceau morceau) {
         if (morceau == null) {
             throw new IllegalArgumentException("Le morceau ne peut pas être nul.");
@@ -64,6 +123,13 @@ public class StatistiquesService implements Serializable {
         return morceau.getNombreEcoutes();
     }
 
+    /**
+     * Retourne le nombre total d'écoutes des morceaux d'un album.
+     *
+     * @param album l'album concerné
+     * @return le nombre d'écoutes de l'album
+     * @throws IllegalArgumentException si l'album est nul
+     */
     public int getNombreEcoutesPourAlbum(Album album) {
         if (album == null) {
             throw new IllegalArgumentException("L'album ne peut pas être nul.");
@@ -76,6 +142,13 @@ public class StatistiquesService implements Serializable {
         return total;
     }
 
+    /**
+     * Retourne le nombre total d'écoutes des morceaux d'un artiste.
+     *
+     * @param artiste l'artiste concerné
+     * @return le nombre d'écoutes de l'artiste
+     * @throws IllegalArgumentException si l'artiste est nul
+     */
     public int getNombreEcoutesPourArtiste(Artiste artiste) {
         if (artiste == null) {
             throw new IllegalArgumentException("L'artiste ne peut pas être nul.");
@@ -90,6 +163,12 @@ public class StatistiquesService implements Serializable {
         return total;
     }
 
+    /**
+     * Retourne les écoutes classées par morceau.
+     *
+     * @return une map associant chaque morceau à son nombre d'écoutes,
+     *         triée par ordre décroissant
+     */
     public Map<Morceau, Integer> getEcoutesParMorceau() {
         Map<Morceau, Integer> resultat = new LinkedHashMap<>();
 
@@ -100,6 +179,12 @@ public class StatistiquesService implements Serializable {
         return resultat;
     }
 
+    /**
+     * Retourne les écoutes classées par album.
+     *
+     * @return une map associant chaque album à son nombre d'écoutes,
+     *         triée par ordre décroissant
+     */
     public Map<Album, Integer> getEcoutesParAlbum() {
         Map<Album, Integer> resultat = new LinkedHashMap<>();
         List<Album> albums = new ArrayList<>(systeme.getCatalogue().getAlbums());
@@ -116,6 +201,12 @@ public class StatistiquesService implements Serializable {
         return resultat;
     }
 
+    /**
+     * Retourne les écoutes classées par artiste.
+     *
+     * @return une map associant chaque artiste à son nombre d'écoutes,
+     *         triée par ordre décroissant
+     */
     public Map<Artiste, Integer> getEcoutesParArtiste() {
         Map<Artiste, Integer> resultat = new LinkedHashMap<>();
         List<Artiste> artistes = new ArrayList<>(systeme.getCatalogue().getArtistes());
@@ -132,6 +223,13 @@ public class StatistiquesService implements Serializable {
         return resultat;
     }
 
+    /**
+     * Retourne les morceaux les plus écoutés.
+     *
+     * @param limite le nombre maximal de morceaux à retourner
+     * @return la liste des morceaux les plus écoutés
+     * @throws IllegalArgumentException si la limite n'est pas strictement positive
+     */
     public List<Morceau> getTopMorceauxLesPlusEcoutes(int limite) {
         validerLimite(limite);
 
@@ -144,6 +242,13 @@ public class StatistiquesService implements Serializable {
         return new ArrayList<>(morceaux.subList(0, limite));
     }
 
+    /**
+     * Retourne les albums les plus écoutés.
+     *
+     * @param limite le nombre maximal d'albums à retourner
+     * @return la liste des albums les plus écoutés
+     * @throws IllegalArgumentException si la limite n'est pas strictement positive
+     */
     public List<Album> getTopAlbumsLesPlusEcoutes(int limite) {
         validerLimite(limite);
 
@@ -161,6 +266,13 @@ public class StatistiquesService implements Serializable {
         return new ArrayList<>(albums.subList(0, limite));
     }
 
+    /**
+     * Retourne les artistes les plus écoutés.
+     *
+     * @param limite le nombre maximal d'artistes à retourner
+     * @return la liste des artistes les plus écoutés
+     * @throws IllegalArgumentException si la limite n'est pas strictement positive
+     */
     public List<Artiste> getTopArtistesLesPlusEcoutes(int limite) {
         validerLimite(limite);
 
