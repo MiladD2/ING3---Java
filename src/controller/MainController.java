@@ -140,22 +140,82 @@ public class MainController {
         // Add some demo data if catalogue is empty
         if (system.getCatalogue().getNombreMorceaux() == 0) {
             Catalogue cat = system.getCatalogue();
-            Artiste beatles = new Artiste(1, "The Beatles", "Groupe légendaire");
-            cat.ajouterArtiste(beatles);
             
-            Morceau m1 = new Morceau(1, "Let It Be", 243, "Rock");
-            m1.definirArtiste(beatles);
-            cat.ajouterMorceau(m1);
-            
-            Morceau m2 = new Morceau(2, "Yesterday", 125, "Pop");
-            m2.definirArtiste(beatles);
-            cat.ajouterMorceau(m2);
+            // 1. THE BEATLES (Groupe)
+            Groupe beatles = new Groupe(1, "The Beatles", "Groupe de rock britannique légendaire.");
+            Artiste john = new Artiste(101, "John Lennon", "Chanteur et guitariste.");
+            Artiste paul = new Artiste(102, "Paul McCartney", "Chanteur et bassiste.");
+            Artiste george = new Artiste(103, "George Harrison", "Guitariste.");
+            Artiste ringo = new Artiste(104, "Ringo Starr", "Batteur.");
+            beatles.ajouterMembre(john); beatles.ajouterMembre(paul); 
+            beatles.ajouterMembre(george); beatles.ajouterMembre(ringo);
+            cat.ajouterGroupe(beatles);
+            cat.ajouterArtiste(john); cat.ajouterArtiste(paul); 
+            cat.ajouterArtiste(george); cat.ajouterArtiste(ringo);
 
-            Artiste daft = new Artiste(2, "Daft Punk", "Electro");
-            cat.ajouterArtiste(daft);
-            Morceau m3 = new Morceau(3, "Get Lucky", 248, "Disco");
-            m3.definirArtiste(daft);
-            cat.ajouterMorceau(m3);
+            Album abbey = new Album(1, "Abbey Road", 1969);
+            abbey.definirGroupe(beatles);
+            String[] abbeyTracks = {"Come Together", "Something", "Maxwell's Silver Hammer", "Oh! Darling", "Octopus's Garden", "I Want You (She's So Heavy)", "Here Comes the Sun", "Because", "You Never Give Me Your Money", "Sun King", "Mean Mr. Mustard", "Polythene Pam", "She Came In Through the Bathroom Window", "Golden Slumbers", "Carry That Weight", "The End", "Her Majesty"};
+            for(int i=0; i<abbeyTracks.length; i++) {
+                Morceau m = new Morceau(100+i, abbeyTracks[i], 180 + (i*10%60), "Rock");
+                m.definirGroupe(beatles);
+                abbey.ajouterMorceau(m);
+                cat.ajouterMorceau(m);
+            }
+            cat.ajouterAlbum(abbey);
+
+            // 2. QUEEN (Groupe)
+            Groupe queen = new Groupe(2, "Queen", "Groupe de rock britannique iconique.");
+            Artiste freddie = new Artiste(201, "Freddie Mercury", "Chanteur légendaire.");
+            Artiste brian = new Artiste(202, "Brian May", "Guitariste virtuose.");
+            queen.ajouterMembre(freddie); queen.ajouterMembre(brian);
+            cat.ajouterGroupe(queen); cat.ajouterArtiste(freddie); cat.ajouterArtiste(brian);
+            
+            Album night = new Album(2, "A Night at the Opera", 1975);
+            night.definirGroupe(queen);
+            String[] queenTracks = {"Death on Two Legs", "Lazing on a Sunday Afternoon", "I'm in Love with My Car", "You're My Best Friend", "39", "Bohemian Rhapsody"};
+            for(int i=0; i<queenTracks.length; i++) {
+                Morceau m = new Morceau(200+i, queenTracks[i], 200 + (i*20), "Rock");
+                m.definirGroupe(queen);
+                night.ajouterMorceau(m);
+                cat.ajouterMorceau(m);
+            }
+            cat.ajouterAlbum(night);
+
+            // 3. DAFT PUNK (Groupe / Duo)
+            Groupe daft = new Groupe(3, "Daft Punk", "Duo de musique électronique français.");
+            Artiste thomas = new Artiste(301, "Thomas Bangalter", "Musicien.");
+            Artiste guy = new Artiste(302, "Guy-Manuel de Homem-Christo", "Musicien.");
+            daft.ajouterMembre(thomas); daft.ajouterMembre(guy);
+            cat.ajouterGroupe(daft); cat.ajouterArtiste(thomas); cat.ajouterArtiste(guy);
+            
+            Morceau getLucky = new Morceau(3, "Get Lucky", 248, "Disco");
+            getLucky.definirGroupe(daft);
+            cat.ajouterMorceau(getLucky);
+
+            // 4. SOLO ARTIST WITH ALBUM (Michael Jackson)
+            Artiste mj = new Artiste(4, "Michael Jackson", "Le Roi de la Pop.");
+            cat.ajouterArtiste(mj);
+            Album thriller = new Album(3, "Thriller", 1982);
+            thriller.definirArtiste(mj);
+            String[] thrillerTracks = {"Wanna Be Startin' Somethin'", "Baby Be Mine", "The Girl Is Mine", "Thriller", "Beat It", "Billie Jean", "Human Nature", "P.Y.T.", "The Lady in My Life"};
+            for(int i=0; i<thrillerTracks.length; i++) {
+                Morceau m = new Morceau(400+i, thrillerTracks[i], 250, "Pop");
+                m.definirArtiste(mj);
+                thriller.ajouterMorceau(m);
+                cat.ajouterMorceau(m);
+            }
+            cat.ajouterAlbum(thriller);
+
+            // 5. SOLO ARTIST WITH FEW SONGS (Adele)
+            Artiste adele = new Artiste(5, "Adele", "Chanteuse soul britannique.");
+            cat.ajouterArtiste(adele);
+            Morceau hello = new Morceau(5, "Hello", 295, "Soul");
+            hello.definirArtiste(adele);
+            cat.ajouterMorceau(hello);
+            Morceau skyfall = new Morceau(6, "Skyfall", 286, "Soundtrack");
+            skyfall.definirArtiste(adele);
+            cat.ajouterMorceau(skyfall);
         }
     }
 }

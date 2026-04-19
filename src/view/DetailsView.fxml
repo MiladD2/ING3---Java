@@ -29,10 +29,10 @@
                </children>
             </HBox>
 
-            <!-- Action Bar -->
             <HBox spacing="20.0" alignment="CENTER_LEFT">
                <children>
                   <Button fx:id="detailsPlayButton" mnemonicParsing="false" styleClass="button-primary" style="-fx-font-size: 16px; -fx-padding: 12 30;" text="LIRE" />
+                  <Button fx:id="detailsAddPlaylistButton" mnemonicParsing="false" styleClass="button-secondary" style="-fx-font-size: 20px; -fx-padding: 5 15;" text="+" visible="false" />
                   <Button mnemonicParsing="false" onAction="#showSearch" styleClass="button-secondary" text="Retour" />
                </children>
             </HBox>
