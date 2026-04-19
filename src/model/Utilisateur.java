@@ -3,7 +3,13 @@ package model;
 import java.io.Serializable;
 import java.util.Objects;
 
-
+/**
+ * Représente un utilisateur du système Javazik.
+ *
+ * <p>Cette classe abstraite factorise les informations communes
+ * aux abonnés et aux administrateurs, comme l'identifiant,
+ * le mot de passe et le rôle.</p>
+ */
 public abstract class Utilisateur implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -11,25 +17,53 @@ public abstract class Utilisateur implements Serializable {
     private final String identifiant;
     private String motDePasse;
 
+    /**
+     * Construit un utilisateur avec un identifiant et un mot de passe.
+     *
+     * @param identifiant l'identifiant de l'utilisateur
+     * @param motDePasse le mot de passe de l'utilisateur
+     * @throws IllegalArgumentException si l'identifiant ou le mot de passe est invalide
+     */
     public Utilisateur(String identifiant, String motDePasse) {
         this.identifiant = validerIdentifiant(identifiant);
         this.motDePasse = validerMotDePasse(motDePasse);
     }
 
+    /**
+     * Retourne l'identifiant de l'utilisateur.
+     *
+     * @return l'identifiant de l'utilisateur
+     */
     public String getIdentifiant() {
         return identifiant;
     }
 
-
+    /**
+     * Vérifie si le mot de passe fourni correspond à celui de l'utilisateur.
+     *
+     * @param motDePasse le mot de passe à vérifier
+     * @return {@code true} si le mot de passe est correct, sinon {@code false}
+     * @throws NullPointerException si le mot de passe fourni est nul
+     */
     public boolean authentifier(String motDePasse) {
         return this.motDePasse.equals(Objects.requireNonNull(motDePasse));
     }
 
-   
+    /**
+     * Remplace le mot de passe actuel par un nouveau mot de passe valide.
+     *
+     * @param nouveauMotDePasse le nouveau mot de passe
+     * @throws IllegalArgumentException si le nouveau mot de passe est invalide
+     */
     public void changerMotDePasse(String nouveauMotDePasse) {
         this.motDePasse = validerMotDePasse(nouveauMotDePasse);
     }
 
+    /**
+     * Retourne le rôle de l'utilisateur.
+     *
+     * @return le rôle de l'utilisateur
+     */
     public abstract String getRole();
 
     private String validerIdentifiant(String identifiant) {
