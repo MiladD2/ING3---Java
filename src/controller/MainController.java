@@ -14,9 +14,10 @@ import java.util.Map;
 public class MainController {
     private JavazikSystem system;
     private static final String SAVE_FILE = "javazik_data.ser";
+    private final PersistanceService persistanceService;
 
     public MainController() {
-        this.system = new JavazikSystem();
+        this.persistanceService = new PersistanceService(SAVE_FILE);
         chargerDonnees();
     }
 
@@ -380,22 +381,22 @@ public class MainController {
         return top;
     }
 
+    // --- Persistence ---
+
     public void sauvegarderDonnees() {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SAVE_FILE))) {
-            oos.writeObject(system);
+        try {
+            persistanceService.sauvegarder(system);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void chargerDonnees() {
-        File file = new File(SAVE_FILE);
-        if (file.exists()) {
-            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-                this.system = (JavazikSystem) ois.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        try {
+            this.system = persistanceService.chargerOuCreerNouveau();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            this.system = new JavazikSystem();
         }
         
         if (system.getNombreAdministrateurs() == 0) {
