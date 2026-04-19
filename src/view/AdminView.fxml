@@ -12,7 +12,7 @@
             <content>
               <VBox spacing="10.0">
                      <children>
-                        <Button mnemonicParsing="false" styleClass="button-primary" text="Ajouter un morceau" />
+                        <Button mnemonicParsing="false" onAction="#showAddEntityView" styleClass="button-primary" text="Ajouter au catalogue" />
                         <ListView fx:id="adminCatalogueList" />
                      </children>
                      <padding>

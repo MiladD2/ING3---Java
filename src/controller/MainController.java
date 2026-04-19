@@ -87,6 +87,54 @@ public class MainController {
         return system.getCatalogue().rechercherGroupesParNom(query);
     }
 
+    // --- ID Generation ---
+    public int getNextArtisteId() {
+        int max = 0;
+        for (Artiste a : system.getCatalogue().getArtistes()) if (a.getId() > max) max = a.getId();
+        return max + 1;
+    }
+
+    public int getNextGroupeId() {
+        int max = 0;
+        for (Groupe g : system.getCatalogue().getGroupes()) if (g.getId() > max) max = g.getId();
+        return max + 1;
+    }
+
+    public int getNextAlbumId() {
+        int max = 0;
+        for (Album a : system.getCatalogue().getAlbums()) if (a.getId() > max) max = a.getId();
+        return max + 1;
+    }
+
+    public int getNextMorceauId() {
+        int max = 0;
+        for (Morceau m : system.getCatalogue().getMorceaux()) if (m.getId() > max) max = m.getId();
+        return max + 1;
+    }
+
+    // --- Catalog Management ---
+    public void ajouterArtiste(String nom, String bio) {
+        system.getCatalogue().ajouterArtiste(new Artiste(getNextArtisteId(), nom, bio));
+    }
+
+    public void ajouterGroupe(String nom, String desc) {
+        system.getCatalogue().ajouterGroupe(new Groupe(getNextGroupeId(), nom, desc));
+    }
+
+    public void ajouterAlbum(String titre, int annee, Object interprete) {
+        Album a = new Album(getNextAlbumId(), titre, annee);
+        if (interprete instanceof Artiste) a.definirArtiste((Artiste)interprete);
+        else if (interprete instanceof Groupe) a.definirGroupe((Groupe)interprete);
+        system.getCatalogue().ajouterAlbum(a);
+    }
+
+    public void ajouterMorceau(String titre, int duree, String genre, Object interprete) {
+        Morceau m = new Morceau(getNextMorceauId(), titre, duree, genre);
+        if (interprete instanceof Artiste) m.definirArtiste((Artiste)interprete);
+        else if (interprete instanceof Groupe) m.definirGroupe((Groupe)interprete);
+        system.getCatalogue().ajouterMorceau(m);
+    }
+
     // --- Listening ---
 
     public void ecouterMorceau(Morceau morceau) {
