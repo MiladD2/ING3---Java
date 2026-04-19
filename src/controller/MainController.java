@@ -112,7 +112,18 @@ public class MainController {
         return max + 1;
     }
 
-    // --- Catalog Management ---
+    // --- User Management ---
+    public void suspendreUtilisateur(String id) {
+        system.suspendreAbonne(id);
+    }
+
+    public void reactiverUtilisateur(String id) {
+        system.reactiverAbonne(id);
+    }
+
+    public void supprimerUtilisateur(String id) {
+        system.supprimerAbonne(id);
+    }
     public void ajouterArtiste(String nom, String bio) {
         system.getCatalogue().ajouterArtiste(new Artiste(getNextArtisteId(), nom, bio));
     }

@@ -17,9 +17,9 @@ import model.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Collections;
 
 public class ViewController {
 
@@ -57,12 +57,17 @@ public class ViewController {
     @FXML private VBox guestCounterBox;
     @FXML private Label guestRemainingLabel;
 
-    // Home
+    // Stats View
+    @FXML private Label statUserCount;
+    @FXML private Label statSongCount;
+    @FXML private Label statAlbumCount;
+    @FXML private Label statGroupCount;
+    @FXML private Label statTotalPlays;
+
+    // Sections
     @FXML private HBox artistsHomePane;
     @FXML private HBox albumsHomePane;
     @FXML private HBox songsHomePane;
-
-    // Search
     @FXML private ListView<Object> searchResults;
     @FXML private TextField searchBar;
     @FXML private ToggleButton filterAll;
@@ -85,17 +90,12 @@ public class ViewController {
     @FXML private FlowPane artistsFlowPane;
     @FXML private VBox sectionMorceaux;
     @FXML private VBox morceauxVBox;
-    @FXML private Label morceauxTitleLabel;
 
-    // Playlists
+    // Lists
     @FXML private ListView<PlayList> playlistList;
-
-    // History
     @FXML private ListView<Ecoute> historyList;
-
-    // Admin
     @FXML private ListView<Morceau> adminCatalogueList;
-    @FXML private ListView<Utilisateur> adminUserList;
+    @FXML private ListView<Abonne> adminUserList;
     
     // Add Entity
     @FXML private ToggleGroup addEntityGroup;
@@ -105,6 +105,7 @@ public class ViewController {
     @FXML private ToggleButton addTypeMorceau;
     @FXML private ListView<Object> existingEntitiesList;
     @FXML private GridPane addEntityForm;
+    
     private Map<String, Control> formFields = new HashMap<>();
     private int currentRowIndex = 0;
 
@@ -127,17 +128,9 @@ public class ViewController {
             updateGuestCounter();
             setupSliderStyles();
         }
-
         if (roleComboBox != null) {
             roleComboBox.getItems().setAll("Abonné", "Administrateur");
             roleComboBox.setValue("Abonné");
-        }
-        
-        if (addEntityGroup != null) {
-            addEntityGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> {
-                if (newT != null) refreshAddEntityView();
-            });
-            refreshAddEntityView();
         }
         updateMenuVisibility();
     }
@@ -170,7 +163,7 @@ public class ViewController {
     }
 
     private void updateGuestCounter() {
-        if (staticGuestRemainingLabel != null && mainController != null && mainController.getSystem().estEnModeVisiteur()) {
+        if (staticGuestRemainingLabel != null && mainController != null && mainController.getSystem() != null && mainController.getSystem().estEnModeVisiteur()) {
             int max = VisiteurSession.LIMITE_PAR_DEFAUT;
             int current = mainController.getSystem().getVisiteurSession().getNombreEcoutes();
             staticGuestRemainingLabel.setText((max - current) + " écoutes restantes");
@@ -178,7 +171,7 @@ public class ViewController {
     }
 
     private void updateMenuVisibility() {
-        if (abonneMenu != null && mainController != null) {
+        if (abonneMenu != null && mainController != null && mainController.getSystem() != null) {
             boolean isAbonne = mainController.getSystem().estUnAbonneConnecte();
             boolean isAdmin = mainController.getSystem().estUnAdministrateurConnecte();
             boolean isGuest = mainController.getSystem().estEnModeVisiteur();
@@ -193,26 +186,36 @@ public class ViewController {
     @FXML private void showSearch(ActionEvent event) { loadView("SearchView.fxml"); configurerListViewGenerique(searchResults); handleSearch(null); }
     @FXML private void showPlaylists(ActionEvent event) { loadView("PlaylistView.fxml"); configurerListViewPlaylists(); }
     @FXML private void showHistory(ActionEvent event) { loadView("HistoryView.fxml"); configurerListViewHistory(); }
+    
     @FXML private void showAdminDashboard(ActionEvent event) {
         loadView("AdminView.fxml");
         if (adminCatalogueList != null) { configurerListViewMorceaux(adminCatalogueList); adminCatalogueList.getItems().setAll(mainController.getTousLesMorceaux()); }
-        if (adminUserList != null) { List<Utilisateur> list = new ArrayList<>(); for (Abonne a : mainController.getSystem().getAbonnes()) list.add(a); adminUserList.getItems().setAll(list); }
+        if (adminUserList != null) { configurerListViewUtilisateurs(); adminUserList.getItems().setAll(mainController.getSystem().getAbonnes()); }
     }
-    @FXML private void showAddEntityView(ActionEvent event) { loadView("AddEntityView.fxml"); refreshAddEntityView(); }
+    
+    @FXML private void showStats(ActionEvent event) { loadView("StatsView.fxml"); calculerStatistiques(); }
+
+    @FXML private void showAddEntityView(ActionEvent event) {
+        loadView("AddEntityView.fxml");
+        if (addEntityGroup != null) {
+            addEntityGroup.selectedToggleProperty().addListener((obs, oldT, newT) -> { if (newT != null) refreshAddEntityView(); });
+        }
+        refreshAddEntityView();
+    }
 
     private void loadView(String fxmlFile) {
         try {
-            // Reset FXML references to avoid conflicts
+            // Cleanup FXML references
             artistsHomePane = null; albumsHomePane = null; songsHomePane = null;
             searchResults = null; searchBar = null;
             detailsTitle = null; detailsSubtitle = null; detailsLabel1 = null; detailsLabel2 = null;
             detailsPlayButton = null; detailsAddPlaylistButton = null; 
             playlistActionsBox = null; detailsRenameButton = null; detailsDeleteButton = null;
             sectionArtistes = null; artistsFlowPane = null; sectionMorceaux = null;
-            morceauxVBox = null; morceauxTitleLabel = null;
-            playlistList = null; historyList = null;
+            morceauxVBox = null; playlistList = null; historyList = null;
             adminCatalogueList = null; adminUserList = null;
             addEntityForm = null; existingEntitiesList = null;
+            statUserCount = null; statSongCount = null; statAlbumCount = null; statGroupCount = null; statTotalPlays = null;
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             loader.setController(this);
@@ -238,25 +241,120 @@ public class ViewController {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // --- AUTHENTICATION ---
-    @FXML private void handleLogin(ActionEvent event) {
-        if (loginField == null || passwordField == null || mainController == null) return;
-        String id = loginField.getText(); String pwd = passwordField.getText();
-        String role = (roleComboBox != null) ? roleComboBox.getValue() : "Abonné";
-        if ("Abonné".equals(role) ? mainController.loginAbonne(id, pwd) : mainController.loginAdministrateur(id, pwd)) switchToMainView();
-        else showAlert("Erreur", "Identifiant ou mot de passe incorrect.");
+    // --- ADMIN LOGIC ---
+    private void calculerStatistiques() {
+        if (statUserCount == null || mainController == null) return;
+        JavazikSystem sys = mainController.getSystem();
+        statUserCount.setText(String.valueOf(sys.getNombreAbonnes()));
+        statSongCount.setText(String.valueOf(sys.getCatalogue().getNombreMorceaux()));
+        statAlbumCount.setText(String.valueOf(sys.getCatalogue().getAlbums().size()));
+        statGroupCount.setText(String.valueOf(sys.getCatalogue().getGroupes().size()));
+        int total = 0;
+        for (Morceau m : sys.getCatalogue().getMorceaux()) total += m.getNombreEcoutes();
+        statTotalPlays.setText(String.valueOf(total));
     }
 
-    @FXML private void handleRegister(ActionEvent event) {
-        if (loginField == null || passwordField == null || mainController == null) return;
-        String id = loginField.getText(); String pwd = passwordField.getText();
-        if (id.isEmpty() || pwd.isEmpty()) { showAlert("Erreur", "Champs vides."); return; }
-        try { mainController.registerAbonne(id, pwd); showAlert("Succès", "Compte créé !"); }
-        catch (Exception e) { showAlert("Erreur", e.getMessage()); }
+    private void configurerListViewUtilisateurs() {
+        if (adminUserList == null) return;
+        adminUserList.setCellFactory(param -> new ListCell<Abonne>() {
+            private final HBox root = new HBox(15);
+            private final Label nameLbl = new Label();
+            private final CheckBox suspendCb = new CheckBox("Suspendre");
+            private final Region spacer = new Region();
+            private final Button deleteBtn = new Button("🗑");
+            {
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                deleteBtn.setStyle("-fx-text-fill: #ff4444; -fx-background-color: transparent; -fx-font-size: 16px;");
+                nameLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold;");
+                root.setAlignment(Pos.CENTER_LEFT);
+                root.getChildren().addAll(nameLbl, spacer, suspendCb, deleteBtn);
+            }
+            @Override protected void updateItem(Abonne user, boolean empty) {
+                super.updateItem(user, empty);
+                if (empty || user == null) setGraphic(null);
+                else {
+                    nameLbl.setText(user.getIdentifiant());
+                    suspendCb.setSelected(user.estSuspendu());
+                    suspendCb.setOnAction(e -> {
+                        if (suspendCb.isSelected()) mainController.suspendreUtilisateur(user.getIdentifiant());
+                        else mainController.reactiverUtilisateur(user.getIdentifiant());
+                    });
+                    deleteBtn.setOnAction(e -> {
+                        mainController.supprimerUtilisateur(user.getIdentifiant());
+                        adminUserList.getItems().remove(user);
+                    });
+                    setGraphic(root);
+                }
+            }
+        });
     }
 
-    @FXML private void handleVisitor(ActionEvent event) { if (mainController != null) { mainController.continuerCommeVisiteur(); switchToMainView(); } }
-    @FXML private void handleLogout(ActionEvent event) { if (mainController != null) mainController.deconnecter(); isPlaying = false; currentMorceau = null; switchToLoginView(); }
+    private void refreshAddEntityView() {
+        if (addEntityForm == null || existingEntitiesList == null) return;
+        addEntityForm.getChildren().clear(); 
+        formFields.clear(); 
+        currentRowIndex = 0;
+        existingEntitiesList.getItems().clear(); 
+        configurerListViewGenerique(existingEntitiesList);
+
+        if (addTypeArtiste != null && addTypeArtiste.isSelected()) {
+            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesArtistes()));
+            addFormField("Nom", "nom", "Ex: John Lennon");
+            addFormField("Biographie", "bio", "Courte description...");
+        } else if (addTypeGroupe != null && addTypeGroupe.isSelected()) {
+            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesGroupes()));
+            addFormField("Nom", "nom", "Ex: The Beatles");
+            addFormField("Description", "desc", "Description du groupe...");
+        } else if (addTypeAlbum != null && addTypeAlbum.isSelected()) {
+            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesAlbums()));
+            addFormField("Titre", "titre", "Ex: Abbey Road");
+            addFormField("Année", "annee", "Ex: 1969");
+            addComboField("Interprète", "interprete", getListInterpretes());
+        } else if (addTypeMorceau != null && addTypeMorceau.isSelected()) {
+            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesMorceaux()));
+            addFormField("Titre", "titre", "Ex: Let It Be");
+            addFormField("Durée (sec)", "duree", "Ex: 240");
+            addFormField("Genre", "genre", "Ex: Rock");
+            addComboField("Interprète", "interprete", getListInterpretes());
+        }
+    }
+
+    private List<Object> getListInterpretes() { 
+        List<Object> list = new ArrayList<>(); 
+        list.addAll(mainController.getTousLesArtistes()); 
+        list.addAll(mainController.getTousLesGroupes()); 
+        return list; 
+    }
+
+    private void addFormField(String label, String key, String prompt) { 
+        addEntityForm.add(new Label(label + " :"), 0, currentRowIndex); 
+        TextField tf = new TextField(); 
+        tf.setPromptText(prompt); 
+        addEntityForm.add(tf, 1, currentRowIndex); 
+        formFields.put(key, tf); 
+        currentRowIndex++; 
+    }
+
+    private void addComboField(String label, String key, List<Object> items) { 
+        addEntityForm.add(new Label(label + " :"), 0, currentRowIndex); 
+        ComboBox<Object> combo = new ComboBox<>(); 
+        combo.getItems().setAll(items); 
+        combo.setPrefWidth(300); 
+        addEntityForm.add(combo, 1, currentRowIndex); 
+        formFields.put(key, combo); 
+        currentRowIndex++; 
+    }
+
+    @FXML private void handleSaveEntity(ActionEvent event) { 
+        try { 
+            if (addTypeArtiste.isSelected()) mainController.ajouterArtiste(((TextField)formFields.get("nom")).getText(), ((TextField)formFields.get("bio")).getText());
+            else if (addTypeGroupe.isSelected()) mainController.ajouterGroupe(((TextField)formFields.get("nom")).getText(), ((TextField)formFields.get("desc")).getText());
+            else if (addTypeAlbum.isSelected()) mainController.ajouterAlbum(((TextField)formFields.get("titre")).getText(), Integer.parseInt(((TextField)formFields.get("annee")).getText()), ((ComboBox<Object>)formFields.get("interprete")).getValue());
+            else if (addTypeMorceau.isSelected()) mainController.ajouterMorceau(((TextField)formFields.get("titre")).getText(), Integer.parseInt(((TextField)formFields.get("duree")).getText()), ((TextField)formFields.get("genre")).getText(), ((ComboBox<Object>)formFields.get("interprete")).getValue());
+            refreshAddEntityView(); 
+            showAlert("Succès", "Élément ajouté !"); 
+        } catch (Exception e) { showAlert("Erreur", e.getMessage()); } 
+    }
 
     // --- LOGIQUE METIER ---
     private void chargerAccueilSectons() {
@@ -268,25 +366,26 @@ public class ViewController {
         if (songsHomePane != null) { songsHomePane.getChildren().clear(); for (Morceau m : mainController.getTousLesMorceaux()) { boolean inAlbum = false; for (Album al : mainController.getTousLesAlbums()) if (al.getMorceaux().contains(m)) { inAlbum = true; break; } if (!inAlbum) songsHomePane.getChildren().add(createCard(m)); } }
     }
 
-    private VBox createCard(Object item) {
-        VBox card = new VBox(10); card.getStyleClass().add("morceau-card"); card.setPrefWidth(160); card.setMinWidth(160);
-        String t = ""; String s = "";
-        if (item instanceof Morceau) { t = ((Morceau)item).getTitre(); s = ((Morceau)item).getInterprete(); }
-        else if (item instanceof Album) { t = ((Album)item).getTitre(); s = ((Album)item).getInterprete(); }
-        else if (item instanceof Artiste) { t = ((Artiste)item).getNom(); s = "Artiste"; }
-        else if (item instanceof Groupe) { t = ((Groupe)item).getNom(); s = "Groupe"; }
-        Hyperlink tl = new Hyperlink(t); tl.setStyle("-fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0;"); tl.setOnAction(e -> showDetails(item));
-        Label sl = new Label(s); sl.setStyle("-fx-text-fill: #b3b3b3; -fx-font-size: 11px;");
-        HBox c = new HBox(5);
-        if (item instanceof Morceau) { Button p = new Button((item.equals(currentMorceau) && isPlaying) ? "⏸" : "▶"); p.getStyleClass().add("button-primary"); p.setOnAction(e -> handleItemPlayClick((Morceau)item)); c.getChildren().add(p); }
-        else if (item instanceof Album) { Button p = new Button("▶"); p.getStyleClass().add("button-primary"); p.setOnAction(e -> playAlbum((Album)item)); c.getChildren().add(p); }
-        card.getChildren().addAll(tl, sl, c); return card;
+    private VBox createCard(Object item) { 
+        VBox card = new VBox(10); card.getStyleClass().add("morceau-card"); card.setPrefWidth(160); card.setMinWidth(160); 
+        String t = ""; String s = ""; 
+        if (item instanceof Morceau) { t = ((Morceau)item).getTitre(); s = ((Morceau)item).getInterprete(); } 
+        else if (item instanceof Album) { t = ((Album)item).getTitre(); s = ((Album)item).getInterprete(); } 
+        else if (item instanceof Artiste) { t = ((Artiste)item).getNom(); s = "Artiste"; } 
+        else if (item instanceof Groupe) { t = ((Groupe)item).getNom(); s = "Groupe"; } 
+        Hyperlink tl = new Hyperlink(t); tl.setStyle("-fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0;"); tl.setOnAction(e -> showDetails(item)); 
+        Label sl = new Label(s); sl.setStyle("-fx-text-fill: #b3b3b3; -fx-font-size: 11px;"); 
+        HBox c = new HBox(5); 
+        if (item instanceof Morceau) { Button p = new Button((item.equals(currentMorceau) && isPlaying) ? "⏸" : "▶"); p.getStyleClass().add("button-primary"); p.setOnAction(e -> handleItemPlayClick((Morceau)item)); c.getChildren().add(p); } 
+        else if (item instanceof Album) { Button p = new Button("▶"); p.getStyleClass().add("button-primary"); p.setOnAction(e -> playAlbum((Album)item)); c.getChildren().add(p); } 
+        card.getChildren().addAll(tl, sl, c); return card; 
     }
 
     private void playAlbum(Album a) { if (a == null || a.getMorceaux().isEmpty()) return; currentQueue = new ArrayList<>(a.getMorceaux()); queueIndex = 0; playMorceau(currentQueue.get(queueIndex)); }
 
     public void showDetails(Object item) {
-        loadView("DetailsView.fxml"); boolean isAbonne = mainController != null && mainController.getSystem().estUnAbonneConnecte();
+        loadView("DetailsView.fxml"); 
+        boolean isAbonne = mainController != null && mainController.getSystem().estUnAbonneConnecte();
         if (playlistActionsBox != null) { playlistActionsBox.setVisible(false); playlistActionsBox.setManaged(false); }
         if (item instanceof Morceau) {
             Morceau m = (Morceau) item;
@@ -302,12 +401,20 @@ public class ViewController {
             if (detailsPlayButton != null) { detailsPlayButton.setOnAction(e -> handleItemPlayClick(m)); updatePlayButtonText(m); }
             if (detailsAddPlaylistButton != null) { detailsAddPlaylistButton.setVisible(isAbonne); detailsAddPlaylistButton.setOnAction(e -> handleAddToPlaylist(m)); }
         } else if (item instanceof Album) {
-            Album a = (Album) item; if (detailsSubtitle != null) detailsSubtitle.setText("ALBUM"); if (detailsTitle != null) detailsTitle.setText(a.getTitre()); if (detailsLabel1 != null) detailsLabel1.setText(a.getInterprete()); if (detailsLabel2 != null) detailsLabel2.setText(a.getAnneeSortie() + " • " + a.getMorceaux().size() + " morceaux"); if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); } populateMorceauxList(a.getMorceaux()); if (detailsPlayButton != null) { detailsPlayButton.setVisible(true); detailsPlayButton.setOnAction(e -> playAlbum(a)); }
+            Album a = (Album) item; 
+            if (detailsSubtitle != null) detailsSubtitle.setText("ALBUM"); if (detailsTitle != null) detailsTitle.setText(a.getTitre()); if (detailsLabel1 != null) detailsLabel1.setText(a.getInterprete()); if (detailsLabel2 != null) detailsLabel2.setText(a.getAnneeSortie() + " • " + a.getMorceaux().size() + " morceaux"); if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); } populateMorceauxList(a.getMorceaux()); if (detailsPlayButton != null) { detailsPlayButton.setVisible(true); detailsPlayButton.setOnAction(e -> playAlbum(a)); }
         } else if (item instanceof Artiste) {
-            Artiste art = (Artiste) item; if (detailsTitle != null) detailsTitle.setText(art.getNom()); if (detailsLabel1 != null) detailsLabel1.setText(art.getBiographie()); if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); } populateMorceauxList(mainController.getSystem().getCatalogue().getMorceauxDeArtiste(art));
+            Artiste art = (Artiste) item; 
+            if (detailsTitle != null) detailsTitle.setText(art.getNom()); if (detailsLabel1 != null) detailsLabel1.setText(art.getBiographie()); if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); } populateMorceauxList(mainController.getSystem().getCatalogue().getMorceauxDeArtiste(art));
         } else if (item instanceof Groupe) {
-            Groupe g = (Groupe) item; if (detailsTitle != null) detailsTitle.setText(g.getNom()); if (detailsLabel1 != null) detailsLabel1.setText(g.getDescription());
-            if (sectionArtistes != null) { sectionArtistes.setVisible(true); sectionArtistes.setManaged(true); if (artistsFlowPane != null) { artistsFlowPane.getChildren().clear(); for (Artiste m : g.getMembres()) { Label nameLbl = new Label(m.getNom()); nameLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-color: #282828; -fx-background-radius: 20;"); artistsFlowPane.getChildren().add(nameLbl); } } }
+            Groupe g = (Groupe) item; 
+            if (detailsTitle != null) detailsTitle.setText(g.getNom()); if (detailsLabel1 != null) detailsLabel1.setText(g.getDescription());
+            if (sectionArtistes != null) { 
+                sectionArtistes.setVisible(true); sectionArtistes.setManaged(true); 
+                if (artistsFlowPane != null) { 
+                    artistsFlowPane.getChildren().clear(); for (Artiste m : g.getMembres()) { Label nameLbl = new Label(m.getNom()); nameLbl.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-color: #282828; -fx-background-radius: 20;"); artistsFlowPane.getChildren().add(nameLbl); } 
+                } 
+            }
             if (sectionMorceaux != null) { sectionMorceaux.setVisible(true); sectionMorceaux.setManaged(true); } populateMorceauxList(mainController.getSystem().getCatalogue().getMorceauxDeGroupe(g));
         }
     }
@@ -324,31 +431,7 @@ public class ViewController {
     @FXML private void handleNext(ActionEvent event) { if (!currentQueue.isEmpty() && queueIndex < currentQueue.size()-1) { queueIndex++; playMorceau(currentQueue.get(queueIndex)); } }
     @FXML private void handlePrevious(ActionEvent event) { if (!currentQueue.isEmpty() && queueIndex > 0) { queueIndex--; playMorceau(currentQueue.get(queueIndex)); } else playMorceau(currentMorceau); }
 
-    // --- ADMIN ADD ENTITY ---
-    private void refreshAddEntityView() {
-        if (addEntityForm == null || existingEntitiesList == null) return;
-        addEntityForm.getChildren().clear(); formFields.clear(); currentRowIndex = 0;
-        existingEntitiesList.getItems().clear(); configurerListViewGenerique(existingEntitiesList);
-        if (addTypeArtiste.isSelected()) {
-            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesArtistes()));
-            addFormField("Nom", "nom", "Ex: John Lennon"); addFormField("Biographie", "bio", "Courte description...");
-        } else if (addTypeGroupe.isSelected()) {
-            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesGroupes()));
-            addFormField("Nom", "nom", "Ex: The Beatles"); addFormField("Description", "desc", "Description du groupe...");
-        } else if (addTypeAlbum.isSelected()) {
-            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesAlbums()));
-            addFormField("Titre", "titre", "Ex: Abbey Road"); addFormField("Année", "annee", "Ex: 1969"); addComboField("Interprète", "interprete", getListInterpretes());
-        } else if (addTypeMorceau.isSelected()) {
-            existingEntitiesList.getItems().setAll(new ArrayList<Object>(mainController.getTousLesMorceaux()));
-            addFormField("Titre", "titre", "Ex: Let It Be"); addFormField("Durée (sec)", "duree", "Ex: 240"); addFormField("Genre", "genre", "Ex: Rock"); addComboField("Interprète", "interprete", getListInterpretes());
-        }
-    }
-    private List<Object> getListInterpretes() { List<Object> list = new ArrayList<>(); list.addAll(mainController.getTousLesArtistes()); list.addAll(mainController.getTousLesGroupes()); return list; }
-    private void addFormField(String label, String key, String prompt) { addEntityForm.add(new Label(label + " :"), 0, currentRowIndex); TextField tf = new TextField(); tf.setPromptText(prompt); addEntityForm.add(tf, 1, currentRowIndex); formFields.put(key, tf); currentRowIndex++; }
-    private void addComboField(String label, String key, List<Object> items) { addEntityForm.add(new Label(label + " :"), 0, currentRowIndex); ComboBox<Object> combo = new ComboBox<>(); combo.getItems().setAll(items); combo.setPrefWidth(300); addEntityForm.add(combo, 1, currentRowIndex); formFields.put(key, combo); currentRowIndex++; }
-    @FXML private void handleSaveEntity(ActionEvent event) { try { if (addTypeArtiste.isSelected()) mainController.ajouterArtiste(((TextField)formFields.get("nom")).getText(), ((TextField)formFields.get("bio")).getText()); else if (addTypeGroupe.isSelected()) mainController.ajouterGroupe(((TextField)formFields.get("nom")).getText(), ((TextField)formFields.get("desc")).getText()); else if (addTypeAlbum.isSelected()) mainController.ajouterAlbum(((TextField)formFields.get("titre")).getText(), Integer.parseInt(((TextField)formFields.get("annee")).getText()), ((ComboBox<Object>)formFields.get("interprete")).getValue()); else if (addTypeMorceau.isSelected()) mainController.ajouterMorceau(((TextField)formFields.get("titre")).getText(), Integer.parseInt(((TextField)formFields.get("duree")).getText()), ((TextField)formFields.get("genre")).getText(), ((ComboBox<Object>)formFields.get("interprete")).getValue()); refreshAddEntityView(); showAlert("Succès", "Élément ajouté !"); } catch (Exception e) { showAlert("Erreur", e.getMessage()); } }
-
-    // --- PLAYLISTS & HISTORY HELPERS ---
+    // --- OTHER HELPERS ---
     private void configurerListViewPlaylists() { if (playlistList == null || mainController == null) return; Abonne user = mainController.getSystem().getAbonneConnecte(); if (user != null) playlistList.getItems().setAll(user.getPlayLists()); playlistList.setCellFactory(param -> new ListCell<PlayList>() { @Override protected void updateItem(PlayList item, boolean empty) { super.updateItem(item, empty); if (empty || item == null) setText(null); else setText(item.getNom() + " (" + item.getNombreMorceaux() + " titres)"); } }); playlistList.setOnMouseClicked(e -> { if (e.getClickCount() == 2) { PlayList s = playlistList.getSelectionModel().getSelectedItem(); if (s != null) showPlaylistDetails(s); } }); }
     private void configurerListViewHistory() { if (historyList == null || mainController == null) return; Abonne user = mainController.getSystem().getAbonneConnecte(); if (user != null) { List<Ecoute> rev = new ArrayList<>(user.getHistorique().getEcoutes()); java.util.Collections.reverse(rev); historyList.getItems().setAll(rev); } historyList.setCellFactory(param -> new ListCell<Ecoute>() { @Override protected void updateItem(Ecoute item, boolean empty) { super.updateItem(item, empty); if (empty || item == null) setText(null); else setText(item.getMorceau().getTitre() + " - " + item.getMorceau().getInterprete()); } }); historyList.setOnMouseClicked(e -> { if (e.getClickCount() == 2) { Ecoute s = historyList.getSelectionModel().getSelectedItem(); if (s != null) showDetails(s.getMorceau()); } }); }
     private void handleAddToPlaylist(Morceau m) { if (mainController == null || !mainController.getSystem().estUnAbonneConnecte()) return; Abonne user = mainController.getSystem().getAbonneConnecte(); List<PlayList> playlists = user.getPlayLists(); if (playlists.isEmpty()) createNewPlaylistAndAdd(m); else { List<String> choices = new ArrayList<>(); for (PlayList p : playlists) choices.add(p.getNom()); choices.add("+ Créer une nouvelle playlist"); ChoiceDialog<String> dialog = new ChoiceDialog<>(choices.get(0), choices); dialog.setTitle("Ajout Playlist"); dialog.setHeaderText(m.getTitre()); dialog.showAndWait().ifPresent(c -> { if (c.equals("+ Créer une nouvelle playlist")) createNewPlaylistAndAdd(m); else { mainController.ajouterMorceauAPlaylist(c, m); showAlert("Succès", "Ajouté !"); } }); } }
@@ -362,4 +445,16 @@ public class ViewController {
     private void updatePlayButtonText(Morceau m) { if (detailsPlayButton != null) detailsPlayButton.setText((m != null && m.equals(currentMorceau) && isPlaying) ? "⏸" : "▶"); }
     private String formatTime(int s) { return String.format("%d:%02d", s / 60, s % 60); }
     private void showAlert(String t, String c) { Alert a = new Alert(Alert.AlertType.INFORMATION); a.setTitle(t); a.setHeaderText(null); a.setContentText(c); a.showAndWait(); }
+
+    // --- AUTHENTICATION ---
+    @FXML private void handleLogin(ActionEvent event) {
+        if (loginField == null || passwordField == null || mainController == null) return;
+        String id = loginField.getText(); String pwd = passwordField.getText();
+        String role = (roleComboBox != null) ? roleComboBox.getValue() : "Abonné";
+        if ("Abonné".equals(role) ? mainController.loginAbonne(id, pwd) : mainController.loginAdministrateur(id, pwd)) switchToMainView();
+        else showAlert("Erreur", "Identifiant ou mot de passe incorrect.");
+    }
+    @FXML private void handleRegister(ActionEvent event) { if (loginField == null || passwordField == null || mainController == null) return; String id = loginField.getText(); String pwd = passwordField.getText(); if (id.isEmpty() || pwd.isEmpty()) { showAlert("Erreur", "Veuillez remplir tous les champs."); return; } try { mainController.registerAbonne(id, pwd); showAlert("Succès", "Compte créé !"); } catch (Exception e) { showAlert("Erreur", e.getMessage()); } }
+    @FXML private void handleVisitor(ActionEvent event) { if (mainController != null) { mainController.continuerCommeVisiteur(); switchToMainView(); } }
+    @FXML private void handleLogout(ActionEvent event) { if (mainController != null) mainController.deconnecter(); isPlaying = false; currentMorceau = null; switchToLoginView(); }
 }

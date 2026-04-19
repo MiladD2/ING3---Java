@@ -37,6 +37,7 @@
             <VBox fx:id="adminMenu" spacing="5.0">
                <children>
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showAdminDashboard" styleClass="nav-button" text="Gestion Catalogue" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#showStats" styleClass="nav-button" text="Statistiques" />
                </children>
             </VBox>
             
