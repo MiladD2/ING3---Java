@@ -6,5 +6,5 @@
         "src"
     ],
     "java.project.outputPath": "out",
-    "java.debug.settings.vmArgs": "--module-path lib --add-modules javafx.controls,javafx.fxml,javafx.media"
+    "java.debug.settings.vmArgs": "--module-path lib --add-modules javafx.controls,javafx.fxml,javafx.media -Djava.library.path=lib"
 }
